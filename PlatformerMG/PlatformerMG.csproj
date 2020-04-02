@@ -46,6 +46,9 @@
     <Compile Include="AnimationPlayer.cs" />
     <Compile Include="ButtonStates.cs" />
     <Compile Include="Circle.cs" />
+    <Compile Include="Collidable.cs" />
+    <Compile Include="Collision.cs" />
+    <Compile Include="CollisionManager.cs" />
     <Compile Include="CommandManager.cs" />
     <Compile Include="Enemy.cs" />
     <Compile Include="Gem.cs" />

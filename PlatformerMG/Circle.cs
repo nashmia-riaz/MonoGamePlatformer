@@ -15,7 +15,7 @@ namespace TexasJames
     /// <summary>
     /// Represents a 2D circle.
     /// </summary>
-    struct Circle
+    public class Circle
     {
         /// <summary>
         /// Center position of the circle.
