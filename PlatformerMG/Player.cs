@@ -32,9 +32,6 @@ namespace TexasJames
         private AnimationPlayer sprite;
 
         // Sounds
-        private SoundEffect killedSound;
-        private SoundEffect jumpSound;
-        private SoundEffect fallSound;
 
         public Level Level
         {
@@ -102,6 +99,8 @@ namespace TexasJames
         private bool wasJumping;
         private float jumpTime;
 
+        public bool didPlayerJustJump = false;
+
         private bool isAttacking = false;
         private float attackAnimationTime = 0.5f;
         private float attackAnimationTimer = 0.0f;
@@ -157,11 +156,7 @@ namespace TexasJames
             int height = (int)(idleAnimation.FrameWidth * 0.8);
             int top = idleAnimation.FrameHeight - height;
             localBounds = new Rectangle(left, top, width, height);
-
-            // Load sounds.            
-            killedSound = Level.Content.Load<SoundEffect>("Sounds/PlayerKilled");
-            jumpSound = Level.Content.Load<SoundEffect>("Sounds/PlayerJump");
-            fallSound = Level.Content.Load<SoundEffect>("Sounds/PlayerFall");
+            
         }
 
         /// <summary>
@@ -253,14 +248,12 @@ namespace TexasJames
         {
             movement = -1.0f;
             isWalking = true;
-            Console.WriteLine("Player is at "+position);
         }
 
         public void MovePlayerRight()
         {
             movement = 1.0f;
             isWalking = true;
-            Console.WriteLine("Player is at " + position);
         }
 
         public void PlayerJumps()
@@ -391,7 +384,10 @@ namespace TexasJames
                 if ((!wasJumping && IsOnGround) || jumpTime > 0.0f)
                 {
                     if (jumpTime == 0.0f)
-                        jumpSound.Play();
+                        didPlayerJustJump = true;
+                    else
+                        didPlayerJustJump = false;
+                        //jumpSound.Play();
 
                     jumpTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
                     sprite.PlayAnimation(jumpAnimation);
@@ -499,10 +495,10 @@ namespace TexasJames
         {
             isAlive = false;
 
-            if (killedBy != null)
-                killedSound.Play();
-            else
-                fallSound.Play();
+            //if (killedBy != null)
+            //    killedSound.Play();
+            //else
+            //    fallSound.Play();
 
             sprite.PlayAnimation(dieAnimation);
         }
@@ -528,6 +524,30 @@ namespace TexasJames
 
             // Draw that sprite.
             sprite.Draw(gameTime, spriteBatch, Position, flip);
+        }
+
+        public override bool CollisionTest(Collidable obj)
+        {
+            if (obj != null)
+            {
+                return boundingCircle.Intersects(obj.BoundingCircle);
+            }
+
+            return false;
+        }
+
+        public override void OnCollision(Collidable obj)
+        {
+            Gem gem = obj as Gem;
+            
+            if (gem != null)
+            {
+                if (gem.wasCollected) return;
+                Console.WriteLine("Gem collected by player");
+                level.OnGemCollected();
+                //collectedSound.Play();
+                gem.wasCollected = true;
+            }
         }
     }
 }

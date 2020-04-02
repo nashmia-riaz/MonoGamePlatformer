@@ -48,6 +48,7 @@ namespace TexasJames
         private static readonly Point InvalidPosition = new Point(-1, -1);
 
         private CollisionManager collisionManager;
+        private SoundManager soundManager;
 
         // Level game state.
         private Random random = new Random(354668); // Arbitrary, but constant seed
@@ -78,9 +79,7 @@ namespace TexasJames
             get { return content; }
         }
         ContentManager content;
-
-        private SoundEffect exitReachedSound;
-
+        
         #region Loading
 
         /// <summary>
@@ -113,7 +112,7 @@ namespace TexasJames
             }
 
             // Load sounds.
-            exitReachedSound = Content.Load<SoundEffect>("Sounds/ExitReached");
+            soundManager = new SoundManager(content);
         }
 
         /// <summary>
@@ -438,7 +437,10 @@ namespace TexasJames
 
         public void PlayerJumps()
         {
+            Console.WriteLine("Player is jumping");
             player.PlayerJumps();
+            if (player.didPlayerJustJump) 
+                soundManager.PlaySound("PlayerJump");
         }
 
         public void PlayerAttack()
@@ -457,11 +459,11 @@ namespace TexasJames
 
                 gem.Update(gameTime);
 
-                if (gem.BoundingCircle.Intersects(Player.BoundingRectangle))
-                {
-                    gems.RemoveAt(i--);
-                    OnGemCollected(gem, Player);
-                }
+                //if (gem.BoundingCircle.Intersects(Player.BoundingRectangle))
+                //{
+                //    gems.RemoveAt(i--);
+                //    OnGemCollected(gem, Player);
+                //}
             }
         }
 
@@ -494,6 +496,12 @@ namespace TexasJames
             gem.OnCollected(collectedBy);
         }
 
+        public void OnGemCollected()
+        {
+            score += Gem.PointValue;
+            soundManager.PlaySound("GemCollected");
+        }
+        
         /// <summary>
         /// Called when the player is killed.
         /// </summary>
@@ -512,7 +520,7 @@ namespace TexasJames
         private void OnExitReached()
         {
             Player.OnReachedExit();
-            exitReachedSound.Play();
+            soundManager.PlaySound("ExitReached");
             reachedExit = true;
         }
 

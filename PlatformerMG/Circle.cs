@@ -53,8 +53,10 @@ namespace TexasJames
 
         public bool Intersects(Circle circle)
         {
-            if (Math.Abs(circle.Center.X - this.Center.X) < Radius ||
-                Math.Abs(circle.Center.Y - this.Center.Y) < Radius)
+            float distance = (float) Math.Sqrt((circle.Center.X - this.Center.X)* (circle.Center.X - this.Center.X)+
+                (circle.Center.Y - this.Center.Y)* (circle.Center.Y - this.Center.Y));
+
+            if(distance < circle.Radius+ this.Radius)
                 return true;
 
             return false;

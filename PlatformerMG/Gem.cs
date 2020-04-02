@@ -25,6 +25,7 @@ namespace TexasJames
 
         public const int PointValue = 30;
         public readonly Color Color = Color.Yellow;
+        public bool wasCollected = false;
 
         // The gem is animated from a base position along the Y axis.
         private Vector2 basePosition;
@@ -107,7 +108,7 @@ namespace TexasJames
         /// </param>
         public void OnCollected(Player collectedBy)
         {
-            collectedSound.Play();
+            //collectedSound.Play();
         }
 
         /// <summary>
@@ -115,6 +116,7 @@ namespace TexasJames
         /// </summary>
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            if (wasCollected) return;
             spriteBatch.Draw(texture, Position, null, Color, 0.0f, origin, 1.0f, SpriteEffects.None, 0.0f);
         }
 
@@ -130,12 +132,15 @@ namespace TexasJames
 
         public override void OnCollision(Collidable obj)
         {
-            Player player = obj as Player;
-            if (player != null)
-            {
-                Console.WriteLine("Collision with player YAY");
-                collectedSound.Play();
-            }
+            //if (wasCollected) return;
+
+            //Player player = obj as Player;
+            //if (player != null)
+            //{
+            //    Console.WriteLine("Gem collided with " + obj);
+            //    collectedSound.Play();
+            //    wasCollected = true;
+            //}
         }
     }
 }
