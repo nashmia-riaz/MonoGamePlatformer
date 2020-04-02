@@ -25,7 +25,7 @@ namespace TexasJames
     /// <summary>
     /// A monster who is impeding the progress of our fearless adventurer.
     /// </summary>
-    class Enemy
+    class Enemy:Collidable
     {
         public Level Level
         {
@@ -89,6 +89,7 @@ namespace TexasJames
         {
             this.level = level;
             this.position = position;
+            boundingCircle.Center = position;
 
             LoadContent(spriteSet);
         }
@@ -148,6 +149,7 @@ namespace TexasJames
                     // Move in the current direction.
                     Vector2 velocity = new Vector2((int)direction * MoveSpeed * elapsed, 0.0f);
                     position = position + velocity;
+                    boundingCircle.Center = position;
                 }
             }
         }

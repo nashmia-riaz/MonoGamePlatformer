@@ -166,6 +166,7 @@ namespace TexasJames
         public void Reset(Vector2 position)
         {
             Position = position;
+            boundingCircle.Center = position;
             Velocity = Vector2.Zero;
             isAlive = true;
             sprite.PlayAnimation(idleAnimation);
@@ -501,6 +502,7 @@ namespace TexasJames
             isAlive = false;
             
             sprite.PlayAnimation(dieAnimation);
+            level.OnPlayerKilled(killedBy);
         }
 
         /// <summary>
@@ -541,7 +543,8 @@ namespace TexasJames
         {
             Gem gem = obj as Gem;
             Tile tile = obj as Tile;
-            
+            Enemy enemy = obj as Enemy;
+
             if (gem != null)
             {
                 if (gem.wasCollected) return;
@@ -559,6 +562,14 @@ namespace TexasJames
                         Console.WriteLine("Collided with exit");
                         OnReachedExit();
                     }
+                }
+            }
+            if(enemy != null)
+            {
+                if (isAlive && IsOnGround)
+                {
+                    isAlive = false;
+                    OnKilled(enemy);
                 }
             }
         }

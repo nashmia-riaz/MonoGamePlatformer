@@ -309,7 +309,12 @@ namespace TexasJames
         private Tile LoadEnemyTile(int x, int y, string spriteSet)
         {
             Vector2 position = RectangleExtensions.GetBottomCenter(GetBounds(x, y));
-            enemies.Add(new Enemy(this, position, spriteSet));
+            Enemy enemy = new Enemy(this, position, spriteSet);
+            enemies.Add(enemy);
+            enemy.BoundingCircle.Center = position;
+            enemy.BoundingCircle.Radius = 10;
+
+            collisionManager.AddCollidable(enemy);
 
             return new Tile(null, TileCollision.Passable);
         }
@@ -417,7 +422,8 @@ namespace TexasJames
 
                 // Falling off the bottom of the level kills the player.
                 if (Player.BoundingRectangle.Top >= Height * Tile.Height)
-                    OnPlayerKilled(null);
+                    //OnPlayerKilled(null);
+                    player.OnKilled(null);
 
                 UpdateEnemies(gameTime);
 
@@ -490,7 +496,7 @@ namespace TexasJames
                 // Touching an enemy instantly kills the player
                 if (enemy.BoundingRectangle.Intersects(Player.BoundingRectangle))
                 {
-                    OnPlayerKilled(enemy);
+                    //OnPlayerKilled(enemy);
                 }
             }
         }
@@ -520,14 +526,14 @@ namespace TexasJames
         /// The enemy who killed the player. This is null if the player was not killed by an
         /// enemy, such as when a player falls into a hole.
         /// </param>
-        private void OnPlayerKilled(Enemy killedBy)
+        public void OnPlayerKilled(Enemy killedBy)
         {
             if (killedBy != null)
                 soundManager.PlaySound("PlayerFall");
             else
                 soundManager.PlaySound("PlayerKilled");
 
-            Player.OnKilled(killedBy);
+            //Player.OnKilled(killedBy);
 
             hasGameEnded = true;
         }

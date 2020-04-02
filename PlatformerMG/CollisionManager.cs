@@ -55,8 +55,7 @@ namespace TexasJames
                 }
             }
         }
-
-
+        
         private void ResolveCollisions()
         {
             foreach (Collision c in m_Collisions)
