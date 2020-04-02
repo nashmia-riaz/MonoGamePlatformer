@@ -65,6 +65,12 @@ namespace TexasJames
         }
         bool reachedExit;
 
+        public bool HasGameEnded
+        {
+            get { return hasGameEnded; }
+        }
+        bool hasGameEnded;
+
         public TimeSpan TimeRemaining
         {
             get { return timeRemaining; }
@@ -93,6 +99,8 @@ namespace TexasJames
         /// </param>
         public Level(IServiceProvider serviceProvider, Stream fileStream, int levelIndex)
         {
+            hasGameEnded = false;
+
             // Create a new content manager to load content used just by this level.
             content = new ContentManager(serviceProvider, "Content");
             collisionManager = new CollisionManager();
@@ -287,8 +295,12 @@ namespace TexasJames
                 throw new NotSupportedException("A level may only have one exit.");
 
             exit = GetBounds(x, y).Center;
+            Tile exitTile = LoadTile("Exit", TileCollision.Exit);
+            exitTile.BoundingCircle.Center = new Vector2(exit.X, exit.Y);
+            exitTile.BoundingCircle.Radius = 10;
 
-            return LoadTile("Exit", TileCollision.Passable);
+            collisionManager.AddCollidable(exitTile);
+            return exitTile;
         }
 
         /// <summary>
@@ -416,7 +428,7 @@ namespace TexasJames
                     Player.IsOnGround &&
                     Player.BoundingRectangle.Contains(exit))
                 {
-                    OnExitReached();
+                    //OnExitReached();
                 }
             }
 
@@ -437,7 +449,6 @@ namespace TexasJames
 
         public void PlayerJumps()
         {
-            Console.WriteLine("Player is jumping");
             player.PlayerJumps();
             if (player.didPlayerJustJump) 
                 soundManager.PlaySound("PlayerJump");
@@ -511,17 +522,25 @@ namespace TexasJames
         /// </param>
         private void OnPlayerKilled(Enemy killedBy)
         {
+            if (killedBy != null)
+                soundManager.PlaySound("PlayerFall");
+            else
+                soundManager.PlaySound("PlayerKilled");
+
             Player.OnKilled(killedBy);
+
+            hasGameEnded = true;
         }
 
         /// <summary>
         /// Called when the player reaches the level's exit.
         /// </summary>
-        private void OnExitReached()
+        public void OnExitReached()
         {
-            Player.OnReachedExit();
+            //Player.OnReachedExit();
             soundManager.PlaySound("ExitReached");
             reachedExit = true;
+            hasGameEnded = true;
         }
 
         /// <summary>
@@ -529,6 +548,7 @@ namespace TexasJames
         /// </summary>
         public void StartNewLife()
         {
+            hasGameEnded = false;
             Player.Reset(start);
         }
 

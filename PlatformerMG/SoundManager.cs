@@ -20,6 +20,7 @@ namespace TexasJames
             sounds.Add("MonsterKilled", Content.Load<SoundEffect>("Sounds/MonsterKilled"));
             sounds.Add("PlayerJump", Content.Load<SoundEffect>("Sounds/PlayerJump"));
             sounds.Add("PlayerKilled", Content.Load<SoundEffect>("Sounds/PlayerKilled"));
+            sounds.Add("PlayerFall", Content.Load<SoundEffect>("Sounds/PlayerFall"));
         } 
 
         public void PlaySound(string soundName) {

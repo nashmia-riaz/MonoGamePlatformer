@@ -79,7 +79,7 @@ namespace TexasJames
         private const float MoveStickScale = 1.0f;
         private const float AccelerometerScale = 1.5f;
         private const Buttons JumpButton = Buttons.A;
-
+        
         /// <summary>
         /// Gets whether or not the player's feet are on the ground.
         /// </summary>
@@ -210,6 +210,8 @@ namespace TexasJames
 
         public void Update(GameTime gameTime)
         {
+            if (level.HasGameEnded) return;
+
             ApplyPhysics(gameTime);
 
             if (IsAlive && IsOnGround)
@@ -323,6 +325,8 @@ namespace TexasJames
         /// </summary>
         public void ApplyPhysics(GameTime gameTime)
         {
+            if (level.HasGameEnded) return;
+
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             Vector2 previousPosition = Position;
@@ -440,7 +444,8 @@ namespace TexasJames
                 {
                     // If this tile is collidable,
                     TileCollision collision = Level.GetCollision(x, y);
-                    if (collision != TileCollision.Passable)
+
+                    if (collision != TileCollision.Passable && collision!=TileCollision.Exit)
                     {
                         // Determine collision depth (with direction) and magnitude.
                         Rectangle tileBounds = Level.GetBounds(x, y);
@@ -494,12 +499,7 @@ namespace TexasJames
         public void OnKilled(Enemy killedBy)
         {
             isAlive = false;
-
-            //if (killedBy != null)
-            //    killedSound.Play();
-            //else
-            //    fallSound.Play();
-
+            
             sprite.PlayAnimation(dieAnimation);
         }
 
@@ -509,6 +509,7 @@ namespace TexasJames
         public void OnReachedExit()
         {
             sprite.PlayAnimation(celebrateAnimation);
+            level.OnExitReached();
         }
 
         /// <summary>
@@ -539,6 +540,7 @@ namespace TexasJames
         public override void OnCollision(Collidable obj)
         {
             Gem gem = obj as Gem;
+            Tile tile = obj as Tile;
             
             if (gem != null)
             {
@@ -547,6 +549,17 @@ namespace TexasJames
                 level.OnGemCollected();
                 //collectedSound.Play();
                 gem.wasCollected = true;
+            }
+
+            if(tile != null)
+            {
+                if (tile.Collision == TileCollision.Exit)
+                {
+                    if (IsAlive && IsOnGround && !level.ReachedExit){
+                        Console.WriteLine("Collided with exit");
+                        OnReachedExit();
+                    }
+                }
             }
         }
     }

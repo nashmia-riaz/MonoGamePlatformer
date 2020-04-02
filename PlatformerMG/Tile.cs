@@ -35,12 +35,17 @@ namespace TexasJames
         /// past it to the left and right, but can not fall down through the top of it.
         /// </summary>
         Platform = 2,
+    
+        /// <summary>
+        /// A tile that contains the exit. For detecting if player is on exit.
+        /// </summary>
+        Exit = 3,
     }
 
     /// <summary>
     /// Stores the appearance and collision behavior of a tile.
     /// </summary>
-    struct Tile
+    class Tile : Collidable
     {
         public Texture2D Texture;
         public TileCollision Collision;
