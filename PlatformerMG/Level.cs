@@ -47,6 +47,8 @@ namespace TexasJames
         private Point exit = InvalidPosition;
         private static readonly Point InvalidPosition = new Point(-1, -1);
 
+        private CollisionManager collisionManager;
+
         // Level game state.
         private Random random = new Random(354668); // Arbitrary, but constant seed
 
@@ -94,6 +96,7 @@ namespace TexasJames
         {
             // Create a new content manager to load content used just by this level.
             content = new ContentManager(serviceProvider, "Content");
+            collisionManager = new CollisionManager();
 
             timeRemaining = TimeSpan.FromMinutes(2.0);
 
@@ -271,6 +274,7 @@ namespace TexasJames
 
             start = RectangleExtensions.GetBottomCenter(GetBounds(x, y));
             player = new Player(this, start);
+            collisionManager.AddCollidable(player);
 
             return new Tile(null, TileCollision.Passable);
         }
@@ -305,7 +309,9 @@ namespace TexasJames
         private Tile LoadGemTile(int x, int y)
         {
             Point position = GetBounds(x, y).Center;
-            gems.Add(new Gem(this, new Vector2(position.X, position.Y)));
+            Gem newGem = new Gem(this, new Vector2(position.X, position.Y));
+            gems.Add(newGem);
+            collisionManager.AddCollidable(newGem);
 
             return new Tile(null, TileCollision.Passable);
         }
@@ -376,6 +382,8 @@ namespace TexasJames
             GameTime gameTime, 
             DisplayOrientation orientation)
         {
+            collisionManager.Update();
+
             // Pause while the player is dead or time is expired.
             if (!Player.IsAlive || TimeRemaining == TimeSpan.Zero)
             {

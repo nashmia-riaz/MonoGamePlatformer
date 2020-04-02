@@ -19,7 +19,7 @@ namespace TexasJames
     /// <summary>
     /// Our fearless adventurer!
     /// </summary>
-    class Player
+    class Player : Collidable
     {
         // Animations
         private Animation idleAnimation;
@@ -129,6 +129,9 @@ namespace TexasJames
         public Player(Level level, Vector2 position)
         {
             this.level = level;
+
+            this.boundingCircle.Radius = Tile.Width / 3.0f;
+            Console.WriteLine("Player's radius is " + this.boundingCircle.Radius);
 
             LoadContent();
 
@@ -243,18 +246,21 @@ namespace TexasJames
             // Clear input.
             movement = 0.0f;
             isJumping = false;
+            this.boundingCircle.Center = position;
         }
 
         public void MovePlayerLeft()
         {
             movement = -1.0f;
             isWalking = true;
+            Console.WriteLine("Player is at "+position);
         }
 
         public void MovePlayerRight()
         {
             movement = 1.0f;
             isWalking = true;
+            Console.WriteLine("Player is at " + position);
         }
 
         public void PlayerJumps()

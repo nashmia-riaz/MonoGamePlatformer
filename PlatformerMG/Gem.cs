@@ -17,7 +17,7 @@ namespace TexasJames
     /// <summary>
     /// A valuable item the player can collect.
     /// </summary>
-    class Gem
+    class Gem : Collidable
     {
         private Texture2D texture;
         private Vector2 origin;
@@ -65,6 +65,9 @@ namespace TexasJames
         {
             this.level = level;
             this.basePosition = position;
+            this.boundingCircle.Center = position;
+            this.boundingCircle.Radius = Tile.Width / 3.0f;
+            Console.WriteLine("Gem's radius is " + this.boundingCircle.Radius);
 
             LoadContent();
         }
@@ -113,6 +116,26 @@ namespace TexasJames
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(texture, Position, null, Color, 0.0f, origin, 1.0f, SpriteEffects.None, 0.0f);
+        }
+
+        public override bool CollisionTest(Collidable obj)
+        {
+            if (obj != null)
+            {
+                return boundingCircle.Intersects(obj.BoundingCircle);
+            }
+
+            return false;
+        }
+
+        public override void OnCollision(Collidable obj)
+        {
+            Player player = obj as Player;
+            if (player != null)
+            {
+                Console.WriteLine("Collision with player YAY");
+                collectedSound.Play();
+            }
         }
     }
 }

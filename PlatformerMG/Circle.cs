@@ -50,5 +50,14 @@ namespace TexasJames
 
             return ((distanceSquared > 0) && (distanceSquared < Radius * Radius));
         }
+
+        public bool Intersects(Circle circle)
+        {
+            if (Math.Abs(circle.Center.X - this.Center.X) < Radius ||
+                Math.Abs(circle.Center.Y - this.Center.Y) < Radius)
+                return true;
+
+            return false;
+        }
     }
 }

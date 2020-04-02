@@ -12,10 +12,10 @@ namespace TexasJames
         #region Fields
         public bool FlaggedForRemoval { get; protected set; }
         
-        protected Rectangle boundingRectangle = new Rectangle();
-        public Rectangle BoundingRectangle
+        protected Circle boundingCircle = new Circle(new Vector2(0, 0), 0);
+        public Circle BoundingCircle
         {
-            get { return boundingRectangle; }
+            get { return boundingCircle; }
         }
         #endregion
 
