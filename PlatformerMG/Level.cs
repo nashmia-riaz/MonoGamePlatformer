@@ -432,6 +432,12 @@ namespace TexasJames
         {
             player.PlayerJumps();
         }
+
+        public void PlayerAttack()
+        {
+            player.PlayerAttack();
+        }
+
         /// <summary>
         /// Animates each gem and checks to allows the player to collect them.
         /// </summary>

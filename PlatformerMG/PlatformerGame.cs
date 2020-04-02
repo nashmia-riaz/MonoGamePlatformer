@@ -77,6 +77,7 @@ namespace TexasJames
             commandManager.AddKeyboardBinding(Keys.Left, MovePlayerToLeft);
             commandManager.AddKeyboardBinding(Keys.Right, MovePlayerToRight);
             commandManager.AddKeyboardBinding(Keys.Up, MakePlayerJump);
+            commandManager.AddKeyboardBinding(Keys.Space, MakePlayerAttack);
         }
 
         private void ExitGame(eButtonState buttonState, Vector2 amount)
@@ -110,6 +111,14 @@ namespace TexasJames
             if(buttonState == eButtonState.DOWN)
             {
                 level.PlayerJumps();
+            }
+        }
+
+        private void MakePlayerAttack(eButtonState buttonState, Vector2 amount)
+        {
+            if (buttonState == eButtonState.DOWN)
+            {
+                level.PlayerAttack();
             }
         }
 

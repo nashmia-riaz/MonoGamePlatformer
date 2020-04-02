@@ -27,6 +27,7 @@ namespace TexasJames
         private Animation jumpAnimation;
         private Animation celebrateAnimation;
         private Animation dieAnimation;
+        private Animation attackAnimation;
         private SpriteEffects flip = SpriteEffects.None;
         private AnimationPlayer sprite;
 
@@ -101,6 +102,12 @@ namespace TexasJames
         private bool wasJumping;
         private float jumpTime;
 
+        private bool isAttacking = false;
+        private float attackAnimationTime = 0.5f;
+        private float attackAnimationTimer = 0.0f;
+
+        private bool isWalking = false;
+
         private Rectangle localBounds;
         /// <summary>
         /// Gets a rectangle which bounds this player in world space.
@@ -139,6 +146,7 @@ namespace TexasJames
             jumpAnimation = new Animation(Level.Content.Load<Texture2D>("Sprites/Player/Jump"), 0.1f, false);
             celebrateAnimation = new Animation(Level.Content.Load<Texture2D>("Sprites/Player/Celebrate"), 0.1f, false);
             dieAnimation = new Animation(Level.Content.Load<Texture2D>("Sprites/Player/Die"), 0.1f, false);
+            attackAnimation = new Animation(Level.Content.Load<Texture2D>("Sprites/Player/Attack"), 0.1f, false);
 
             // Calculate bounds within texture size.            
             int width = (int)(idleAnimation.FrameWidth * 0.4);
@@ -202,20 +210,33 @@ namespace TexasJames
             isJumping = false;
         }
 
-        public void Update(
-            GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
             ApplyPhysics(gameTime);
 
             if (IsAlive && IsOnGround)
             {
-                if (Math.Abs(Velocity.X) - 0.02f > 0)
+                if (isAttacking)
                 {
-                    sprite.PlayAnimation(runAnimation);
+                    sprite.PlayAnimation(attackAnimation);
+                    attackAnimationTimer+= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if(attackAnimationTimer > attackAnimationTime)
+                    {
+                        isAttacking = false;
+                        attackAnimationTimer = 0.0f;
+                    }
                 }
                 else
                 {
-                    sprite.PlayAnimation(idleAnimation);
+                    if (isWalking)
+                    {
+                        sprite.PlayAnimation(runAnimation);
+                    }
+                    if (Math.Abs(Velocity.X) - 0.02f <= 0)
+                    {
+                        isWalking = false;
+                        sprite.PlayAnimation(idleAnimation);
+                    }
                 }
             }
 
@@ -227,16 +248,24 @@ namespace TexasJames
         public void MovePlayerLeft()
         {
             movement = -1.0f;
+            isWalking = true;
         }
 
         public void MovePlayerRight()
         {
             movement = 1.0f;
+            isWalking = true;
         }
 
         public void PlayerJumps()
         {
             isJumping = true;
+        }
+
+        public void PlayerAttack()
+        {
+            if(!isAttacking && !isJumping && !isWalking)
+                isAttacking = true;
         }
 
         /// <summary>
