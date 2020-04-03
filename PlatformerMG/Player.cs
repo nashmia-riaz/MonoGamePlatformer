@@ -548,9 +548,26 @@ namespace TexasJames
         {
             if (obj != null)
             {
-                return boundingRectangle.Intersects(obj.BoundingRectangle);
+                bool isObjColliding = boundingRectangle.Intersects(obj.BoundingRectangle);
+                if (isObjColliding)
+                {
+                    obj.wasCollidingWith = null;
+                    this.wasCollidingWith = obj;
+                }
+                return isObjColliding;
             }
 
+            return false;
+        }
+
+        public override bool CollisionExitTest()
+        {
+            if (wasCollidingWith == null) return false;
+            if (!boundingRectangle.Intersects(wasCollidingWith.BoundingRectangle))
+            {
+                this.wasCollidingWith.wasCollidingWith = null;
+                return true;
+            }
             return false;
         }
 
@@ -574,17 +591,10 @@ namespace TexasJames
                 if (tile.Collision == TileCollision.Exit)
                 {
                     if (IsAlive && IsOnGround && !level.ReachedExit){
-                        OnCollidingWithExit();
+                        if(!level.CollidingExit)
+                            OnCollidingWithExit();
                     }
                 }
-                else
-                {
-                    OnOutOfExit();
-                }
-            }
-            else
-            {
-                OnOutOfExit();
             }
 
             if(enemy != null)
@@ -595,6 +605,16 @@ namespace TexasJames
                     OnKilled(enemy);
                     Console.WriteLine("Player died to an enemy");
                 }
+            }
+        }
+
+        public override void OnCollisionExit(Collidable obj)
+        {
+            Tile tile = obj as Tile;
+            if (tile != null && tile.Collision == TileCollision.Exit)
+            {
+                if(level.CollidingExit)
+                    OnOutOfExit();
             }
         }
     }

@@ -52,5 +52,9 @@ namespace TexasJames
             this.A.OnCollision(this.B);
         }
 
+        public void ResolveCollisionExit()
+        {
+            this.A.OnCollisionExit(this.B);
+        }
     }
 }

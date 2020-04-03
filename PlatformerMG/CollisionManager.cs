@@ -11,6 +11,8 @@ namespace TexasJames
         private List<Collidable> m_Collidables = new List<Collidable>();
         private HashSet<Collision> m_Collisions = new HashSet<Collision>(new CollisionComparer());
 
+        private HashSet<Collision> m_Collision_Exit = new HashSet<Collision>(new CollisionComparer());
+
         public void AddCollidable(Collidable c)
         {
             m_Collidables.Add(c);
@@ -52,6 +54,11 @@ namespace TexasJames
                             m_Collisions.Add(new Collision(collidable1, collidable2));
                         }
                     }
+
+                    if (collidable1.CollisionExitTest())
+                    {
+                        m_Collision_Exit.Add(new Collision(collidable1, collidable1.wasCollidingWith));
+                    }
                 }
             }
         }
@@ -61,6 +68,11 @@ namespace TexasJames
             foreach (Collision c in m_Collisions)
             {
                 c.Resolve();
+            }
+
+            foreach(Collision c in m_Collision_Exit)
+            {
+                c.ResolveCollisionExit();
             }
         }
     }

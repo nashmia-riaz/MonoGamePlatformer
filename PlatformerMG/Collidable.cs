@@ -17,6 +17,12 @@ namespace TexasJames
         {
             get { return boundingRectangle; }
         }
+
+        public Collidable wasCollidingWith;
+        public virtual bool CollisionExitTest()
+        {
+            return false;
+        }
         #endregion
 
         #region Initialization
@@ -33,6 +39,11 @@ namespace TexasJames
         }
 
         public virtual void OnCollision(Collidable obj)
+        {
+        }
+
+
+        public virtual void OnCollisionExit(Collidable obj)
         {
         }
         #endregion

@@ -558,11 +558,17 @@ namespace TexasJames
 
         public void OnExitColliding()
         {
+            if (collidingExit) return;
+
             collidingExit = true;
+            Console.WriteLine("Walked into exit tile");
         }
 
         public void OnOutOfExit()
         {
+            if (!collidingExit) return;
+
+            Console.WriteLine("Walked out of exit tile");
             collidingExit = false;
         }
         
