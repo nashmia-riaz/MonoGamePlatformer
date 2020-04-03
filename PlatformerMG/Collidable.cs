@@ -10,7 +10,7 @@ namespace TexasJames
     public class Collidable
     {
         #region Fields
-        public bool FlaggedForRemoval { get; protected set; }
+        public bool FlaggedForRemoval;
         
         public Rectangle boundingRectangle = new Rectangle();
         public Rectangle BoundingRectangle

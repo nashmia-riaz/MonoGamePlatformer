@@ -36,6 +36,10 @@ namespace TexasJames
             {
                 m_Collisions.Clear();
             }
+            if(m_Collision_Exit.Count > 0)
+            {
+                m_Collision_Exit.Clear();
+            }
 
             // Iterate through collidable objects and test for collisions between each one
             for (int i = 0; i < m_Collidables.Count; i++)

@@ -562,17 +562,16 @@ namespace TexasJames
 
         public override bool CollisionExitTest()
         {
-            if (wasCollidingWith == null) return false;
-            if (!boundingRectangle.Intersects(wasCollidingWith.BoundingRectangle))
-            {
-                this.wasCollidingWith.wasCollidingWith = null;
-                return true;
-            }
-            return false;
+            if (this.wasCollidingWith == null) return false;
+
+            return !boundingRectangle.Intersects(this.wasCollidingWith.BoundingRectangle);
         }
 
         public override void OnCollision(Collidable obj)
         {
+            if (obj == null) return;
+            if (obj.FlaggedForRemoval) return;
+            //Console.WriteLine("COLLIDING WITH " + obj);
             Gem gem = obj as Gem;
             Tile tile = obj as Tile;
             Enemy enemy = obj as Enemy;
@@ -582,8 +581,8 @@ namespace TexasJames
                 if (gem.wasCollected) return;
                 Console.WriteLine("Gem collected by player");
                 level.OnGemCollected();
-                //collectedSound.Play();
                 gem.wasCollected = true;
+                gem.FlaggedForRemoval = true;
             }
 
             if(tile != null)
@@ -591,8 +590,7 @@ namespace TexasJames
                 if (tile.Collision == TileCollision.Exit)
                 {
                     if (IsAlive && IsOnGround && !level.ReachedExit){
-                        if(!level.CollidingExit)
-                            OnCollidingWithExit();
+                        OnCollidingWithExit();
                     }
                 }
             }
@@ -610,11 +608,14 @@ namespace TexasJames
 
         public override void OnCollisionExit(Collidable obj)
         {
-            Tile tile = obj as Tile;
+            if (this.wasCollidingWith != obj) return;
+            
+            //Console.WriteLine("Colllision with " + this.wasCollidingWith + " ended");
+            Tile tile = this.wasCollidingWith as Tile;
+
             if (tile != null && tile.Collision == TileCollision.Exit)
             {
-                if(level.CollidingExit)
-                    OnOutOfExit();
+                OnOutOfExit();
             }
         }
     }
