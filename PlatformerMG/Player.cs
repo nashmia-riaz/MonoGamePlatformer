@@ -111,7 +111,7 @@ namespace TexasJames
         /// <summary>
         /// Gets a rectangle which bounds this player in world space.
         /// </summary>
-        public Rectangle BoundingRectangle
+        public Rectangle OldBoundingRectangle
         {
             get
             {
@@ -129,8 +129,12 @@ namespace TexasJames
         {
             this.level = level;
 
-            this.boundingCircle.Radius = Tile.Width / 3.0f;
-            Console.WriteLine("Player's radius is " + this.boundingCircle.Radius);
+            int left = (int)Math.Round(Position.X - sprite.Origin.X) + localBounds.X;
+            int top = (int)Math.Round(Position.Y - sprite.Origin.Y) + localBounds.Y;
+
+            this.boundingRectangle = new Rectangle(left, top, localBounds.Width, localBounds.Height);
+            
+            Console.WriteLine("Player's radius is " + this.boundingRectangle.Width);
 
             LoadContent();
 
@@ -166,7 +170,12 @@ namespace TexasJames
         public void Reset(Vector2 position)
         {
             Position = position;
-            boundingCircle.Center = position;
+
+            int left = (int)Math.Round(Position.X - sprite.Origin.X) + localBounds.X;
+            int top = (int)Math.Round(Position.Y - sprite.Origin.Y) + localBounds.Y;
+
+            this.boundingRectangle = new Rectangle(left, top, localBounds.Width, localBounds.Height);
+            
             Velocity = Vector2.Zero;
             isAlive = true;
             sprite.PlayAnimation(idleAnimation);
@@ -244,7 +253,12 @@ namespace TexasJames
             // Clear input.
             movement = 0.0f;
             isJumping = false;
-            this.boundingCircle.Center = position;
+
+            int left = (int)Math.Round(Position.X - sprite.Origin.X) + localBounds.X;
+            int top = (int)Math.Round(Position.Y - sprite.Origin.Y) + localBounds.Y;
+
+            this.boundingRectangle = new Rectangle(left, top, localBounds.Width, localBounds.Height);
+
         }
 
         public void MovePlayerLeft()
@@ -429,7 +443,7 @@ namespace TexasJames
         private void HandleCollisions()
         {
             // Get the player's bounding rectangle and find neighboring tiles.
-            Rectangle bounds = BoundingRectangle;
+            Rectangle bounds = OldBoundingRectangle;
             int leftTile = (int)Math.Floor((float)bounds.Left / Tile.Width);
             int rightTile = (int)Math.Ceiling(((float)bounds.Right / Tile.Width)) - 1;
             int topTile = (int)Math.Floor((float)bounds.Top / Tile.Height);
@@ -470,7 +484,7 @@ namespace TexasJames
                                     Position = new Vector2(Position.X, Position.Y + depth.Y);
 
                                     // Perform further collisions with the new bounds.
-                                    bounds = BoundingRectangle;
+                                    bounds = OldBoundingRectangle;
                                 }
                             }
                             else if (collision == TileCollision.Impassable) // Ignore platforms.
@@ -479,7 +493,7 @@ namespace TexasJames
                                 Position = new Vector2(Position.X + depth.X, Position.Y);
 
                                 // Perform further collisions with the new bounds.
-                                bounds = BoundingRectangle;
+                                bounds = OldBoundingRectangle;
                             }
                         }
                     }
@@ -533,7 +547,7 @@ namespace TexasJames
         {
             if (obj != null)
             {
-                return boundingCircle.Intersects(obj.BoundingCircle);
+                return boundingRectangle.Intersects(obj.BoundingRectangle);
             }
 
             return false;

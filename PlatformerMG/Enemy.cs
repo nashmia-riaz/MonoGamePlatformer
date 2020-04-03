@@ -89,7 +89,12 @@ namespace TexasJames
         {
             this.level = level;
             this.position = position;
-            boundingCircle.Center = position;
+
+            int left = (int)Math.Round(Position.X - sprite.Origin.X) + localBounds.X;
+            int top = (int)Math.Round(Position.Y - sprite.Origin.Y) + localBounds.Y;
+
+            this.boundingRectangle = new Rectangle(left, top, localBounds.Width, localBounds.Height);
+
 
             LoadContent(spriteSet);
         }
@@ -149,7 +154,11 @@ namespace TexasJames
                     // Move in the current direction.
                     Vector2 velocity = new Vector2((int)direction * MoveSpeed * elapsed, 0.0f);
                     position = position + velocity;
-                    boundingCircle.Center = position;
+
+                    int left = (int)Math.Round(Position.X - sprite.Origin.X) + localBounds.X;
+                    int top = (int)Math.Round(Position.Y - sprite.Origin.Y) + localBounds.Y;
+
+                    this.boundingRectangle = new Rectangle(left, top, localBounds.Width, localBounds.Height);
                 }
             }
         }
