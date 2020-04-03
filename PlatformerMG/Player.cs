@@ -111,7 +111,7 @@ namespace TexasJames
         /// <summary>
         /// Gets a rectangle which bounds this player in world space.
         /// </summary>
-        public Rectangle OldBoundingRectangle
+        public Rectangle oldBoundingRectangle
         {
             get
             {
@@ -128,13 +128,6 @@ namespace TexasJames
         public Player(Level level, Vector2 position)
         {
             this.level = level;
-
-            int left = (int)Math.Round(Position.X - sprite.Origin.X) + localBounds.X;
-            int top = (int)Math.Round(Position.Y - sprite.Origin.Y) + localBounds.Y;
-
-            this.boundingRectangle = new Rectangle(left, top, localBounds.Width, localBounds.Height);
-            
-            Console.WriteLine("Player's radius is " + this.boundingRectangle.Width);
 
             LoadContent();
 
@@ -161,6 +154,10 @@ namespace TexasJames
             int top = idleAnimation.FrameHeight - height;
             localBounds = new Rectangle(left, top, width, height);
             
+            this.boundingRectangle.X = (int)position.X;
+            this.boundingRectangle.Y = (int)position.Y;
+            this.boundingRectangle.Width = width;
+            this.boundingRectangle.Height = height;
         }
 
         /// <summary>
@@ -171,11 +168,9 @@ namespace TexasJames
         {
             Position = position;
 
-            int left = (int)Math.Round(Position.X - sprite.Origin.X) + localBounds.X;
-            int top = (int)Math.Round(Position.Y - sprite.Origin.Y) + localBounds.Y;
+            this.boundingRectangle.X = (int)position.X;
+            this.boundingRectangle.Y = (int)position.Y;
 
-            this.boundingRectangle = new Rectangle(left, top, localBounds.Width, localBounds.Height);
-            
             Velocity = Vector2.Zero;
             isAlive = true;
             sprite.PlayAnimation(idleAnimation);
@@ -254,11 +249,8 @@ namespace TexasJames
             movement = 0.0f;
             isJumping = false;
 
-            int left = (int)Math.Round(Position.X - sprite.Origin.X) + localBounds.X;
-            int top = (int)Math.Round(Position.Y - sprite.Origin.Y) + localBounds.Y;
-
-            this.boundingRectangle = new Rectangle(left, top, localBounds.Width, localBounds.Height);
-
+            this.boundingRectangle.X = (int)position.X;
+            this.boundingRectangle.Y = (int)position.Y;
         }
 
         public void MovePlayerLeft()
@@ -443,7 +435,7 @@ namespace TexasJames
         private void HandleCollisions()
         {
             // Get the player's bounding rectangle and find neighboring tiles.
-            Rectangle bounds = OldBoundingRectangle;
+            Rectangle bounds = oldBoundingRectangle;
             int leftTile = (int)Math.Floor((float)bounds.Left / Tile.Width);
             int rightTile = (int)Math.Ceiling(((float)bounds.Right / Tile.Width)) - 1;
             int topTile = (int)Math.Floor((float)bounds.Top / Tile.Height);
@@ -484,7 +476,7 @@ namespace TexasJames
                                     Position = new Vector2(Position.X, Position.Y + depth.Y);
 
                                     // Perform further collisions with the new bounds.
-                                    bounds = OldBoundingRectangle;
+                                    bounds = oldBoundingRectangle;
                                 }
                             }
                             else if (collision == TileCollision.Impassable) // Ignore platforms.
@@ -493,7 +485,7 @@ namespace TexasJames
                                 Position = new Vector2(Position.X + depth.X, Position.Y);
 
                                 // Perform further collisions with the new bounds.
-                                bounds = OldBoundingRectangle;
+                                bounds = oldBoundingRectangle;
                             }
                         }
                     }
@@ -584,6 +576,7 @@ namespace TexasJames
                 {
                     isAlive = false;
                     OnKilled(enemy);
+                    Console.WriteLine("Player died to an enemy");
                 }
             }
         }

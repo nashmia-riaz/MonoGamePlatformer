@@ -296,7 +296,11 @@ namespace TexasJames
 
             exit = GetBounds(x, y).Center;
             Tile exitTile = LoadTile("Exit", TileCollision.Exit);
-
+            exitTile.boundingRectangle.X = (int)exit.X;
+            exitTile.boundingRectangle.Y = (int)exit.Y;
+            exitTile.boundingRectangle.Width = Tile.Width;
+            exitTile.boundingRectangle.Height = Tile.Height;
+            
             collisionManager.AddCollidable(exitTile);
             return exitTile;
         }
@@ -417,7 +421,7 @@ namespace TexasJames
                 UpdateGems(gameTime);
 
                 // Falling off the bottom of the level kills the player.
-                if (Player.OldBoundingRectangle.Top >= Height * Tile.Height)
+                if (Player.oldBoundingRectangle.Top >= Height * Tile.Height)
                     //OnPlayerKilled(null);
                     player.OnKilled(null);
 
@@ -428,7 +432,7 @@ namespace TexasJames
                 // exit when they have collected all of the gems.
                 if (Player.IsAlive &&
                     Player.IsOnGround &&
-                    Player.OldBoundingRectangle.Contains(exit))
+                    Player.oldBoundingRectangle.Contains(exit))
                 {
                     //OnExitReached();
                 }
@@ -490,7 +494,7 @@ namespace TexasJames
                 enemy.Update(gameTime);
 
                 // Touching an enemy instantly kills the player
-                if (enemy.BoundingRectangle.Intersects(Player.OldBoundingRectangle))
+                if (enemy.BoundingRectangle.Intersects(Player.oldBoundingRectangle))
                 {
                     //OnPlayerKilled(enemy);
                 }

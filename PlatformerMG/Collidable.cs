@@ -11,8 +11,8 @@ namespace TexasJames
     {
         #region Fields
         public bool FlaggedForRemoval { get; protected set; }
-
-        protected Rectangle boundingRectangle = new Rectangle();
+        
+        public Rectangle boundingRectangle = new Rectangle();
         public Rectangle BoundingRectangle
         {
             get { return boundingRectangle; }

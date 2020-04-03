@@ -27,8 +27,6 @@ namespace TexasJames
         public readonly Color Color = Color.Yellow;
         public bool wasCollected = false;
 
-        private Rectangle localBounds;
-
         // The gem is animated from a base position along the Y axis.
         private Vector2 basePosition;
         private float bounce;
@@ -53,13 +51,13 @@ namespace TexasJames
         /// <summary>
         /// Gets a circle which bounds this gem in world space.
         /// </summary>
-        //public Circle BoundingCircle
-        //{
-        //    get
-        //    {
-        //        return new Circle(Position, Tile.Width / 3.0f);
-        //    }
-        //}
+        public Circle BoundingCircle
+        {
+            get
+            {
+                return new Circle(Position, Tile.Width / 3.0f);
+            }
+        }
 
         /// <summary>
         /// Constructs a new gem.
@@ -69,14 +67,11 @@ namespace TexasJames
             this.level = level;
             this.basePosition = position;
 
-            int left = (int)Math.Round(Position.X - localBounds.Width/2);
-            int top = (int)Math.Round(Position.Y - localBounds.Height/2);
-
-            this.boundingRectangle = new Rectangle(left, top, localBounds.Width, localBounds.Height);
-            
-            //this.boundingRectangle.Center = position;
-            //this.boundingRectangle.Radius = Tile.Width / 3.0f;
-            //Console.WriteLine("Gem's radius is " + this.boundingRectangle.Radius);
+            this.boundingRectangle.X = (int)position.X;
+            this.boundingRectangle.Y = (int)position.Y;
+            this.boundingRectangle.Width = Tile.Width;
+            this.boundingRectangle.Height = Tile.Height;
+            Console.WriteLine("Gem's radius is " + this.boundingRectangle.Width);
 
             LoadContent();
         }
@@ -89,12 +84,6 @@ namespace TexasJames
             texture = Level.Content.Load<Texture2D>("Sprites/Gem");
             origin = new Vector2(texture.Width / 2.0f, texture.Height / 2.0f);
             collectedSound = Level.Content.Load<SoundEffect>("Sounds/GemCollected");
-            
-            int width = (int) texture.Width;
-            int left = (int) Position.X - width / 2;
-            int height = (int) texture.Height;
-            int top = (int) Position.Y - width /2;
-            localBounds = new Rectangle(left, top, width, height);
         }
 
         /// <summary>

@@ -14,6 +14,7 @@ namespace TexasJames
         public void AddCollidable(Collidable c)
         {
             m_Collidables.Add(c);
+            Console.WriteLine(c.BoundingRectangle.Center);
         }
 
         public void RemoveCollidable(Collidable c)

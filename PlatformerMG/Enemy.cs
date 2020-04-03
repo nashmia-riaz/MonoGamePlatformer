@@ -90,11 +90,8 @@ namespace TexasJames
             this.level = level;
             this.position = position;
 
-            int left = (int)Math.Round(Position.X - sprite.Origin.X) + localBounds.X;
-            int top = (int)Math.Round(Position.Y - sprite.Origin.Y) + localBounds.Y;
-
-            this.boundingRectangle = new Rectangle(left, top, localBounds.Width, localBounds.Height);
-
+            this.boundingRectangle.X = (int)position.X;
+            this.boundingRectangle.Y = (int)position.Y;
 
             LoadContent(spriteSet);
         }
@@ -116,6 +113,9 @@ namespace TexasJames
             int height = (int)(idleAnimation.FrameWidth * 0.7);
             int top = idleAnimation.FrameHeight - height;
             localBounds = new Rectangle(left, top, width, height);
+
+            this.boundingRectangle.Width = width;
+            this.boundingRectangle.Height = height;
         }
 
 
@@ -154,11 +154,8 @@ namespace TexasJames
                     // Move in the current direction.
                     Vector2 velocity = new Vector2((int)direction * MoveSpeed * elapsed, 0.0f);
                     position = position + velocity;
-
-                    int left = (int)Math.Round(Position.X - sprite.Origin.X) + localBounds.X;
-                    int top = (int)Math.Round(Position.Y - sprite.Origin.Y) + localBounds.Y;
-
-                    this.boundingRectangle = new Rectangle(left, top, localBounds.Width, localBounds.Height);
+                    this.boundingRectangle.X = (int)position.X;
+                    this.boundingRectangle.Y = (int)position.Y;
                 }
             }
         }
