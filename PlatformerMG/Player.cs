@@ -352,7 +352,7 @@ namespace TexasJames
                 velocity.X *= AirDragFactor;
 
             // Prevent the player from running faster than his top speed.            
-            velocity.X = MathHelper.Clamp(velocity.X, -MaxMoveSpeed, MaxMoveSpeed);
+            velocity.X = MathHelper.Clamp(velocity.X, -GameInfo.Instance.PlayerInfo.MaxMoveSpeed, GameInfo.Instance.PlayerInfo.MaxMoveSpeed);
 
             // Apply velocity.
             Position += velocity * elapsed;
@@ -514,10 +514,19 @@ namespace TexasJames
         /// <summary>
         /// Called when this player reaches the level's exit.
         /// </summary>
+        public void OnCollidingWithExit()
+        {
+            level.OnExitColliding();
+        }
+
         public void OnReachedExit()
         {
             sprite.PlayAnimation(celebrateAnimation);
-            level.OnExitReached();
+        }
+
+        public void OnOutOfExit()
+        {
+            level.OnOutOfExit();
         }
 
         /// <summary>
@@ -565,11 +574,19 @@ namespace TexasJames
                 if (tile.Collision == TileCollision.Exit)
                 {
                     if (IsAlive && IsOnGround && !level.ReachedExit){
-                        Console.WriteLine("Collided with exit");
-                        OnReachedExit();
+                        OnCollidingWithExit();
                     }
                 }
+                else
+                {
+                    OnOutOfExit();
+                }
             }
+            else
+            {
+                OnOutOfExit();
+            }
+
             if(enemy != null)
             {
                 if (isAlive && IsOnGround)

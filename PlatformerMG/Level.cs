@@ -65,6 +65,12 @@ namespace TexasJames
         }
         bool reachedExit;
 
+        public bool CollidingExit
+        {
+            get { return collidingExit; }
+        }
+        bool collidingExit;
+
         public bool HasGameEnded
         {
             get { return hasGameEnded; }
@@ -85,7 +91,13 @@ namespace TexasJames
             get { return content; }
         }
         ContentManager content;
-        
+
+        public Loader Loader
+        {
+            get { return loader; }
+        }
+        Loader loader;
+
         #region Loading
 
         /// <summary>
@@ -100,6 +112,9 @@ namespace TexasJames
         public Level(IServiceProvider serviceProvider, Stream fileStream, int levelIndex)
         {
             hasGameEnded = false;
+
+            loader = new Loader(fileStream);
+            loader.ReadXML("Content/Info.xml");
 
             // Create a new content manager to load content used just by this level.
             content = new ContentManager(serviceProvider, "Content");
@@ -135,19 +150,10 @@ namespace TexasJames
         {
             // Load the level and ensure all of the lines are the same length.
             int width;
-            List<string> lines = new List<string>();
-            using (StreamReader reader = new StreamReader(fileStream))
-            {
-                string line = reader.ReadLine();
-                width = line.Length;
-                while (line != null)
-                {
-                    lines.Add(line);
-                    if (line.Length != width)
-                        throw new Exception(String.Format("The length of line {0} is different from all preceeding lines.", lines.Count));
-                    line = reader.ReadLine();
-                }
-            }
+            List<string> lines;// = new List<string>();
+
+            lines = loader.ReadLinesFromTextFile();
+            width = lines[0].Length;
 
             // Allocate the tile grid.
             tiles = new Tile[width, lines.Count];
@@ -168,7 +174,6 @@ namespace TexasJames
                 throw new NotSupportedException("A level must have a starting point.");
             if (exit == InvalidPosition)
                 throw new NotSupportedException("A level must have an exit.");
-
         }
 
         /// <summary>
@@ -543,12 +548,24 @@ namespace TexasJames
         /// </summary>
         public void OnExitReached()
         {
-            //Player.OnReachedExit();
+            if (!collidingExit || ReachedExit) return;
+
+            Player.OnReachedExit();
             soundManager.PlaySound("ExitReached");
             reachedExit = true;
             hasGameEnded = true;
         }
 
+        public void OnExitColliding()
+        {
+            collidingExit = true;
+        }
+
+        public void OnOutOfExit()
+        {
+            collidingExit = false;
+        }
+        
         /// <summary>
         /// Restores the player to the starting point to try the level again.
         /// </summary>

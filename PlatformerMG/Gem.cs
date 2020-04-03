@@ -120,7 +120,7 @@ namespace TexasJames
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             if (wasCollected) return;
-            spriteBatch.Draw(texture, Position, null, Color, 0.0f, origin, 1.0f, SpriteEffects.None, 0.0f);
+            spriteBatch.Draw(texture, Position, null, GameInfo.Instance.GemInfo.Color, 0.0f, origin, 1.0f, SpriteEffects.None, 0.0f);
         }
 
         public override bool CollisionTest(Collidable obj)
