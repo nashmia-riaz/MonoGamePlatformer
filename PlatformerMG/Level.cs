@@ -41,6 +41,7 @@ namespace TexasJames
 
         private List<Gem> gems = new List<Gem>();
         private List<Enemy> enemies = new List<Enemy>();
+        private List<EnemyB> enemiesB = new List<EnemyB>();
         private List<Bullet> bullets = new List<Bullet>();
         private List<Ammo> ammos = new List<Ammo>();
 
@@ -323,8 +324,18 @@ namespace TexasJames
         private Tile LoadEnemyTile(int x, int y, string spriteSet)
         {
             Vector2 position = RectangleExtensions.GetBottomCenter(GetBounds(x, y));
-            Enemy enemy = new Enemy(this, position, spriteSet);
-            enemies.Add(enemy);
+            Enemy enemy;
+            if (spriteSet == "MonsterB")
+            {
+                enemy = new EnemyB(this, position, spriteSet);
+                enemiesB.Add(enemy as EnemyB);
+            }
+            else
+            {
+                enemy = new Enemy(this, position, spriteSet);
+                enemies.Add(enemy);
+            }
+
 
             collisionManager.AddCollidable(enemy);
 
@@ -515,6 +526,7 @@ namespace TexasJames
         public void RemoveEnemy(Enemy enemy)
         {
             enemies.Remove(enemy);
+            soundManager.PlaySound("MonsterKilled");
         }
 
         public void RemoveGem(Gem gem)
@@ -561,12 +573,12 @@ namespace TexasJames
             foreach (Enemy enemy in enemies)
             {
                 enemy.Update(gameTime);
+            }
 
-                // Touching an enemy instantly kills the player
-                if (enemy.BoundingRectangle.Intersects(Player.oldBoundingRectangle))
-                {
-                    //OnPlayerKilled(enemy);
-                }
+            foreach (EnemyB enemy in enemiesB)
+            {
+                if(enemy!=null)
+                    enemy.Update(gameTime, player.Position);
             }
         }
 
@@ -594,8 +606,6 @@ namespace TexasJames
                 soundManager.PlaySound("PlayerFall");
             else
                 soundManager.PlaySound("PlayerKilled");
-
-            //Player.OnKilled(killedBy);
 
             hasGameEnded = true;
         }
@@ -664,6 +674,9 @@ namespace TexasJames
             Player.Draw(gameTime, spriteBatch);
 
             foreach (Enemy enemy in enemies)
+                enemy.Draw(gameTime, spriteBatch);
+
+            foreach (EnemyB enemy in enemiesB)
                 enemy.Draw(gameTime, spriteBatch);
 
             for (int i = EntityLayer + 1; i < layers.Length; ++i)

@@ -10,6 +10,7 @@ namespace TexasJames
     public class EnemyInfo
     {
         public float Speed = 0.0f;
+        public float ChaseSpeed = 0.0f;
     }
     
     public class PlayerInfo

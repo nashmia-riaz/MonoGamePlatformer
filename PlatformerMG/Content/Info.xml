@@ -2,6 +2,7 @@
 <GameInfo>
   <EnemyInfo>
     <Speed>100</Speed>
+    <ChaseSpeed>200</ChaseSpeed>
   </EnemyInfo>
   <PlayerInfo>
     <MaxMoveSpeed>

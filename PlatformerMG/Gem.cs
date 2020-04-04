@@ -44,12 +44,6 @@ namespace TexasJames
         public Gem(Level level, Vector2 position):base(level, position, "Sprites/Gem")
         {
             this.basePosition = position;
-            //this.level = level;
-
-            //this.boundingRectangle.Width = Tile.Width;
-            //this.boundingRectangle.Height = Tile.Height;
-            //this.boundingRectangle.X = (int)(position.X - Tile.Width/2);
-            //this.boundingRectangle.Y = (int)(position.Y-Tile.Height/2);
         }
 
         /// <summary>

@@ -27,6 +27,9 @@ namespace TexasJames
     /// </summary>
     class Enemy:Collidable
     {
+
+        public Enemy() { }
+
         public Level Level
         {
             get { return level; }
@@ -38,11 +41,12 @@ namespace TexasJames
         /// </summary>
         public Vector2 Position
         {
+            set { position = value; }
             get { return position; }
         }
-        Vector2 position;
+        protected Vector2 position;
         
-        private Rectangle localBounds;
+        protected Rectangle localBounds;
         /// <summary>
         /// Gets a rectangle which bounds this enemy in world space.
         /// </summary>
@@ -58,33 +62,32 @@ namespace TexasJames
         }
 
         // Animations
-        private Animation runAnimation;
-        private Animation idleAnimation;
-        private AnimationPlayer sprite;
+        protected Animation runAnimation;
+        protected Animation idleAnimation;
+        protected AnimationPlayer sprite;
 
         /// <summary>
         /// The direction this enemy is facing and moving along the X axis.
         /// </summary>
-        private FaceDirection direction = FaceDirection.Left;
+        protected FaceDirection direction = FaceDirection.Left;
 
         /// <summary>
         /// How long this enemy has been waiting before turning around.
         /// </summary>
-        private float waitTime;
+        protected float waitTime;
 
         /// <summary>
         /// How long to wait before turning around.
         /// </summary>
-        private const float MaxWaitTime = 0.5f;
+        protected const float MaxWaitTime = 0.5f;
 
         /// <summary>
         /// The speed at which this enemy moves along the X axis.
         /// </summary>
-        private const float MoveSpeed = 64.0f;
-
-
-        float width = 64;
-        float height = 64;
+        protected const float MoveSpeed = 64.0f;
+        
+        protected float width = 64;
+        protected float height = 64;
 
         /// <summary>
         /// Constructs a new Enemy.
@@ -122,12 +125,11 @@ namespace TexasJames
             localBounds = new Rectangle(left, top, newWidth, newHeight);
 
         }
-
-
+        
         /// <summary>
         /// Paces back and forth along a platform, waiting at either end.
         /// </summary>
-        public void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime)
         {
             if (this.FlaggedForRemoval) return;
 
@@ -170,7 +172,7 @@ namespace TexasJames
         /// <summary>
         /// Draws the animated enemy.
         /// </summary>
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             if (this.FlaggedForRemoval) return;
 
