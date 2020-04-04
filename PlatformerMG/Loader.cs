@@ -102,7 +102,24 @@ namespace TexasJames
             }
         }
 
-
-
+        public void WriteXML(string filename)
+        {
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(filename))
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(GameInfo));
+                    serializer.Serialize(writer, GameInfo.Instance);
+                    //GameInfo.Instance = (GameInfo)new XmlSerializer(typeof(GameInfo)).Deserialize(reader.BaseStream);
+                }
+            }
+            catch (Exception e)
+            {
+                // If we've caught an exception, output an error message
+                // describing the error
+                Console.WriteLine("ERROR: XML File could not be serialized!");
+                Console.WriteLine("Exception Message: " + e.Message);
+            }
+        }
     }
 }

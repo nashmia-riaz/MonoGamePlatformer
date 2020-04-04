@@ -71,7 +71,6 @@ namespace TexasJames
             this.boundingRectangle.Height = Tile.Height;
             this.boundingRectangle.X = (int)(position.X - Tile.Width/2);
             this.boundingRectangle.Y = (int)(position.Y-Tile.Height/2);
-            Console.WriteLine("Gem's radius is " + this.boundingRectangle.Width);
 
             LoadContent();
         }

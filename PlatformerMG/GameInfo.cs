@@ -11,8 +11,7 @@ namespace TexasJames
     {
         public float Speed = 0.0f;
     }
-
-
+    
     public class PlayerInfo
     {
         public float MaxMoveSpeed = 0.0f;
@@ -43,5 +42,7 @@ namespace TexasJames
         public PlayerInfo PlayerInfo;
         public EnemyInfo EnemyInfo;
         public GemInfo GemInfo;
+
+        public int Highscore = 0;
     }
 }

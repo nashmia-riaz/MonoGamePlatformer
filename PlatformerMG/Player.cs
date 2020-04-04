@@ -222,7 +222,7 @@ namespace TexasJames
             if (level.HasGameEnded) return;
 
             ApplyPhysics(gameTime);
-
+            
             if (IsAlive && IsOnGround)
             {
                 if (isAttacking)

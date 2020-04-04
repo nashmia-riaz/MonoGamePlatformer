@@ -575,6 +575,7 @@ namespace TexasJames
             hasGameEnded = true;
         }
 
+        
         /// <summary>
         /// Called when the player reaches the level's exit.
         /// </summary>
@@ -586,6 +587,12 @@ namespace TexasJames
             soundManager.PlaySound("ExitReached");
             reachedExit = true;
             hasGameEnded = true;
+
+            if (score > GameInfo.Instance.Highscore)
+            {
+                GameInfo.Instance.Highscore = score;
+                loader.WriteXML("Content/Info.xml");
+            }
         }
 
         public void OnExitColliding()
