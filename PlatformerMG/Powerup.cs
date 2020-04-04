@@ -1,0 +1,44 @@
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace TexasJames
+{
+    class Powerup:Collidable
+    {
+        protected Texture2D texture;
+        protected Vector2 origin;
+        protected Vector2 Position;
+
+        public Level level;
+
+        public virtual void OnCollected() { }
+
+        /// <summary>
+        /// Loads the gem texture and collected sound.
+        /// </summary>
+        public void LoadContent(string texPath)
+        {
+            texture = level.Content.Load<Texture2D>(texPath);
+            origin = new Vector2(texture.Width / 2.0f, texture.Height / 2.0f);
+        }
+
+        public Powerup() { }
+
+        public Powerup(Level level, Vector2 pos, string texPath) {
+            Position = pos;
+            this.level = level;
+
+            LoadContent(texPath);
+        }
+
+        public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(texture, Position, null, Color.White, 0.0f, origin, 1.0f, SpriteEffects.None, 0.0f);
+        }
+    }
+}

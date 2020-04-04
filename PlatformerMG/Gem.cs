@@ -49,17 +49,6 @@ namespace TexasJames
         }
 
         /// <summary>
-        /// Gets a circle which bounds this gem in world space.
-        /// </summary>
-        //public Circle BoundingCircle
-        //{
-        //    get
-        //    {
-        //        return new Circle(Position, Tile.Width / 3.0f);
-        //    }
-        //}
-
-        /// <summary>
         /// Constructs a new gem.
         /// </summary>
         public Gem(Level level, Vector2 position)

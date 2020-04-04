@@ -42,6 +42,7 @@ namespace TexasJames
         private List<Gem> gems = new List<Gem>();
         private List<Enemy> enemies = new List<Enemy>();
         private List<Bullet> bullets = new List<Bullet>();
+        private List<Ammo> ammos = new List<Ammo>();
 
         // Key locations in the level.        
         private Vector2 start;
@@ -50,6 +51,8 @@ namespace TexasJames
 
         private CollisionManager collisionManager;
         private SoundManager soundManager;
+
+        private int ammoCount = 10;
 
         // Level game state.
         private Random random = new Random(354668); // Arbitrary, but constant seed
@@ -207,6 +210,9 @@ namespace TexasJames
                 case 'G':
                     return LoadGemTile(x, y);
 
+                case 'Q':
+                    return LoadAmmoTile(x, y);
+
                 // Floating platform
                 case '-':
                     return LoadTile("Platform", TileCollision.Platform);
@@ -334,6 +340,16 @@ namespace TexasJames
             Gem newGem = new Gem(this, new Vector2(position.X, position.Y));
             gems.Add(newGem);
             collisionManager.AddCollidable(newGem);
+
+            return new Tile(null, TileCollision.Passable);
+        }
+
+        public Tile LoadAmmoTile(int x, int y)
+        {
+            Point point = GetBounds(x, y).Center;
+            Ammo newAmmo = new Ammo(this, new Vector2(point.X, point.Y), "Sprites/Ammo");
+            ammos.Add(newAmmo);
+            collisionManager.AddCollidable(newAmmo);
 
             return new Tile(null, TileCollision.Passable);
         }
@@ -470,9 +486,16 @@ namespace TexasJames
 
         public void MakePlayerShoot()
         {
+            if (ammoCount <= 0) return;
+            ammoCount--;
             Bullet bullet = new Bullet(this, player.Position, player.direction);
             bullets.Add(bullet);
             collisionManager.AddCollidable(bullet);
+        }
+
+        public void AmmoCollected()
+        {
+            ammoCount+=5;
         }
 
         public void PlayerAttack()
@@ -574,7 +597,6 @@ namespace TexasJames
 
             hasGameEnded = true;
         }
-
         
         /// <summary>
         /// Called when the player reaches the level's exit.
@@ -647,6 +669,9 @@ namespace TexasJames
 
             foreach (Bullet bullet in bullets)
                 bullet.Draw(gameTime, spriteBatch);
+
+            foreach (Ammo ammo in ammos)
+                ammo.Draw(gameTime, spriteBatch);
         }
 
         /// <summary>
