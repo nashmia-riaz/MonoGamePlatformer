@@ -549,9 +549,16 @@ namespace TexasJames
 
         private void UpdateBullets(GameTime gameTime)
         {
-            foreach(Bullet bullet in bullets)
+            for(int i = 0; i < bullets.ToArray().Length; i++)
             {
+                Bullet bullet = bullets[i];
                 bullet.Update(gameTime);
+
+                if (bullet.boundingRectangle.X < -Width * Tile.Width
+                    || bullet.boundingRectangle.X + Width > Width * Tile.Width)
+                {
+                    RemoveBullet(bullet);
+                }
             }
         }
         /// <summary>

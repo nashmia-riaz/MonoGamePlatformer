@@ -14,7 +14,7 @@ namespace TexasJames
         float height = 10;
         float speed = 10.0f;
 
-        Vector2 position = new Vector2(0.0f, 0.0f);
+        public Vector2 position = new Vector2(0.0f, 0.0f);
 
         float direction = 0.0f;
         
