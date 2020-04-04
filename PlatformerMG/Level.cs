@@ -333,6 +333,11 @@ namespace TexasJames
                 enemy = new EnemyB(this, position, spriteSet);
                 enemiesB.Add(enemy as EnemyB);
             }
+            else if(spriteSet == "MonsterC")
+            {
+                enemy = new EnemyC(this, position, spriteSet);
+                enemiesB.Add(enemy as EnemyC);
+            }
             else
             {
                 enemy = new Enemy(this, position, spriteSet);

@@ -108,7 +108,7 @@ namespace TexasJames
 
         private bool isWalking = false;
 
-        float width = 64;
+        float width = 40;
         float height = 64;
 
         private Rectangle localBounds;
@@ -160,8 +160,12 @@ namespace TexasJames
 
             this.boundingRectangle.Width = (int)width;
             this.boundingRectangle.Height = (int)height;
-            this.boundingRectangle.X = (int)(position.X - width / 2);
-            this.boundingRectangle.Y = (int)(position.Y - height);
+            this.boundingRectangle.X = (int)(position.X + this.width /2);
+            this.boundingRectangle.Y = (int)(position.Y - this.height);
+
+            Console.WriteLine("Spawning player at " + position);
+            Console.WriteLine("Width is " + this.boundingRectangle.Width + ", height is " + this.boundingRectangle.Height);
+            Console.WriteLine("Player bounding box top left is at " + this.boundingRectangle.Center);
         }
 
         /// <summary>
@@ -173,7 +177,7 @@ namespace TexasJames
             Position = position;
 
             this.boundingRectangle.X = (int)(position.X - width / 2);
-            this.boundingRectangle.Y = (int)(position.Y - height / 2);
+            this.boundingRectangle.Y = (int)(position.Y - height);
 
             Velocity = Vector2.Zero;
             isAlive = true;
@@ -254,7 +258,7 @@ namespace TexasJames
             isJumping = false;
 
             this.boundingRectangle.X = (int)(position.X - width / 2);
-            this.boundingRectangle.Y = (int)(position.Y - height / 2);
+            this.boundingRectangle.Y = (int)(position.Y - height);
         }
 
         public void MovePlayerLeft()

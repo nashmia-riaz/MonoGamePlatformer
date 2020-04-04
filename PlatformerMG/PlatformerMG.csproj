@@ -57,6 +57,7 @@
     <Compile Include="CommandManager.cs" />
     <Compile Include="Enemy.cs" />
     <Compile Include="EnemyB.cs" />
+    <Compile Include="EnemyC.cs" />
     <Compile Include="GameInfo.cs" />
     <Compile Include="Gem.cs" />
     <Compile Include="InputHandler.cs" />

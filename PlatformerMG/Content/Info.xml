@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <GameInfo>
   <EnemyInfo>
-    <Speed>100</Speed>
+    <Speed>64</Speed>
     <ChaseSpeed>200</ChaseSpeed>
   </EnemyInfo>
   <PlayerInfo>

@@ -27,7 +27,7 @@ namespace TexasJames
         /// <summary>
         /// Paces back and forth along a platform, waiting at either end.
         /// </summary>
-        public void Update(GameTime gameTime, Vector2 playerPos)
+        public virtual void Update(GameTime gameTime, Vector2 playerPos)
         {
             if (this.FlaggedForRemoval) return;
 
@@ -69,8 +69,8 @@ namespace TexasJames
                     // Move in the current direction.
                     Vector2 velocity = new Vector2((int)direction * GameInfo.Instance.EnemyInfo.ChaseSpeed * elapsed, 0.0f);
                     position = position + velocity;
-                    this.boundingRectangle.X = (int)(position.X - width / 2);
-                    this.boundingRectangle.Y = (int)(position.Y - height / 2);
+                    this.boundingRectangle.X = (int)(position.X);
+                    this.boundingRectangle.Y = (int)(position.Y - height );
                 }
             }
         }
