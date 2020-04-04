@@ -92,7 +92,8 @@ namespace TexasJames
         /// <summary>
         /// Current user movement input.
         /// </summary>
-        private float movement;
+        public float movement;
+        public float direction = 1.0f;
 
         // Jumping state
         private bool isJumping;
@@ -149,8 +150,8 @@ namespace TexasJames
 
             // Calculate bounds within texture size.            
             int width = (int)(idleAnimation.FrameWidth * 0.4);
+            int height = (int)(idleAnimation.FrameHeight * 0.8);
             int left = (idleAnimation.FrameWidth - width) / 2;
-            int height = (int)(idleAnimation.FrameWidth * 0.8);
             int top = idleAnimation.FrameHeight - height;
             localBounds = new Rectangle(left, top, width, height);
             
@@ -255,12 +256,14 @@ namespace TexasJames
 
         public void MovePlayerLeft()
         {
+            direction = -1.0f;
             movement = -1.0f;
             isWalking = true;
         }
 
         public void MovePlayerRight()
         {
+            direction = 1.0f;
             movement = 1.0f;
             isWalking = true;
         }
@@ -583,6 +586,7 @@ namespace TexasJames
                 level.OnGemCollected();
                 gem.wasCollected = true;
                 gem.FlaggedForRemoval = true;
+                level.RemoveGem(gem);
             }
 
             if(tile != null)

@@ -47,6 +47,7 @@
     <Compile Include="Accelerometer.cs" />
     <Compile Include="Animation.cs" />
     <Compile Include="AnimationPlayer.cs" />
+    <Compile Include="Bullet.cs" />
     <Compile Include="ButtonStates.cs" />
     <Compile Include="Circle.cs" />
     <Compile Include="Collidable.cs" />

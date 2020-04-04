@@ -41,7 +41,7 @@ namespace TexasJames
             get { return position; }
         }
         Vector2 position;
-
+        
         private Rectangle localBounds;
         /// <summary>
         /// Gets a rectangle which bounds this enemy in world space.
@@ -108,10 +108,14 @@ namespace TexasJames
             sprite.PlayAnimation(idleAnimation);
 
             // Calculate bounds within texture size.
-            int width = (int)(idleAnimation.FrameWidth * 0.35);
-            int left = (idleAnimation.FrameWidth - width) / 2;
-            int height = (int)(idleAnimation.FrameWidth * 0.7);
-            int top = idleAnimation.FrameHeight - height;
+            //int width = (int)(idleAnimation.FrameWidth);
+            //int height = (int)(idleAnimation.FrameHeight);
+            //int left = (idleAnimation.FrameWidth - width) / 2;
+            //int top = idleAnimation.FrameHeight - height;
+            int width = 22;
+            int height = 64;
+            int left = (int)position.X-width/2;
+            int top = (int)position.Y-height/2;
             localBounds = new Rectangle(left, top, width, height);
 
             this.boundingRectangle.Width = width;
@@ -124,6 +128,8 @@ namespace TexasJames
         /// </summary>
         public void Update(GameTime gameTime)
         {
+            if (this.FlaggedForRemoval) return;
+
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             // Calculate tile position based on the side we are walking towards.
@@ -165,6 +171,8 @@ namespace TexasJames
         /// </summary>
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            if (this.FlaggedForRemoval) return;
+
             // Stop running when the game is paused or before turning around.
             if (!Level.Player.IsAlive ||
                 Level.ReachedExit ||
@@ -182,6 +190,38 @@ namespace TexasJames
             // Draw facing the way the enemy is moving.
             SpriteEffects flip = direction > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
             sprite.Draw(gameTime, spriteBatch, Position, flip);
+        }
+
+        public override bool CollisionTest(Collidable obj)
+        {
+            if (obj != null)
+            {
+                return boundingRectangle.Intersects(obj.BoundingRectangle);
+            }
+
+            return false;
+        }
+
+        public override void OnCollision(Collidable obj)
+        {
+            if (obj == null) return;
+            if (obj.FlaggedForRemoval || this.FlaggedForRemoval) return;
+
+            if (obj as Gem != null) return;
+
+            Console.WriteLine("Enemy collided with "+obj);
+            Bullet bullet = obj as Bullet;
+
+            if(bullet != null)
+            {
+                bullet.FlaggedForRemoval = true;
+                this.FlaggedForRemoval = true;
+                level.RemoveBullet(bullet);
+                level.RemoveEnemy(this);
+                Console.WriteLine(bullet + " and " + this + " collided");
+                //level.remo
+            }
+            
         }
     }
 }

@@ -41,6 +41,7 @@ namespace TexasJames
 
         private List<Gem> gems = new List<Gem>();
         private List<Enemy> enemies = new List<Enemy>();
+        private List<Bullet> bullets = new List<Bullet>();
 
         // Key locations in the level.        
         private Vector2 start;
@@ -432,6 +433,8 @@ namespace TexasJames
 
                 UpdateEnemies(gameTime);
 
+                UpdateBullets(gameTime);
+
                 // The player has reached the exit if they are standing on the ground and
                 // his bounding rectangle contains the center of the exit tile. They can only
                 // exit when they have collected all of the gems.
@@ -465,11 +468,40 @@ namespace TexasJames
                 soundManager.PlaySound("PlayerJump");
         }
 
+        public void MakePlayerShoot()
+        {
+            Bullet bullet = new Bullet(this, player.Position, player.direction);
+            bullets.Add(bullet);
+            collisionManager.AddCollidable(bullet);
+        }
+
         public void PlayerAttack()
         {
             player.PlayerAttack();
         }
 
+        public void RemoveBullet(Bullet bullet)
+        {
+            bullets.Remove(bullet);
+        }
+
+        public void RemoveEnemy(Enemy enemy)
+        {
+            enemies.Remove(enemy);
+        }
+
+        public void RemoveGem(Gem gem)
+        {
+            gems.Remove(gem);
+        }
+
+        private void UpdateBullets(GameTime gameTime)
+        {
+            foreach(Bullet bullet in bullets)
+            {
+                bullet.Update(gameTime);
+            }
+        }
         /// <summary>
         /// Animates each gem and checks to allows the player to collect them.
         /// </summary>
@@ -605,6 +637,9 @@ namespace TexasJames
 
             for (int i = EntityLayer + 1; i < layers.Length; ++i)
                 spriteBatch.Draw(layers[i], Vector2.Zero, Color.White);
+
+            foreach (Bullet bullet in bullets)
+                bullet.Draw(gameTime, spriteBatch);
         }
 
         /// <summary>

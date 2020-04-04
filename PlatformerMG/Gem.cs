@@ -51,13 +51,13 @@ namespace TexasJames
         /// <summary>
         /// Gets a circle which bounds this gem in world space.
         /// </summary>
-        public Circle BoundingCircle
-        {
-            get
-            {
-                return new Circle(Position, Tile.Width / 3.0f);
-            }
-        }
+        //public Circle BoundingCircle
+        //{
+        //    get
+        //    {
+        //        return new Circle(Position, Tile.Width / 3.0f);
+        //    }
+        //}
 
         /// <summary>
         /// Constructs a new gem.
@@ -119,31 +119,7 @@ namespace TexasJames
         /// </summary>
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            if (wasCollected) return;
             spriteBatch.Draw(texture, Position, null, GameInfo.Instance.GemInfo.Color, 0.0f, origin, 1.0f, SpriteEffects.None, 0.0f);
-        }
-
-        public override bool CollisionTest(Collidable obj)
-        {
-            if (obj != null)
-            {
-                return boundingRectangle.Intersects(obj.BoundingRectangle);
-            }
-
-            return false;
-        }
-
-        public override void OnCollision(Collidable obj)
-        {
-            //if (wasCollected) return;
-
-            //Player player = obj as Player;
-            //if (player != null)
-            //{
-            //    Console.WriteLine("Gem collided with " + obj);
-            //    collectedSound.Play();
-            //    wasCollected = true;
-            //}
         }
     }
 }
