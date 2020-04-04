@@ -108,6 +108,9 @@ namespace TexasJames
 
         private bool isWalking = false;
 
+        float width = 64;
+        float height = 64;
+
         private Rectangle localBounds;
         /// <summary>
         /// Gets a rectangle which bounds this player in world space.
@@ -149,16 +152,16 @@ namespace TexasJames
             attackAnimation = new Animation(Level.Content.Load<Texture2D>("Sprites/Player/Attack"), 0.1f, false);
 
             // Calculate bounds within texture size.            
-            int width = (int)(idleAnimation.FrameWidth * 0.4);
-            int height = (int)(idleAnimation.FrameHeight * 0.8);
-            int left = (idleAnimation.FrameWidth - width) / 2;
-            int top = idleAnimation.FrameHeight - height;
-            localBounds = new Rectangle(left, top, width, height);
-            
-            this.boundingRectangle.X = (int)position.X;
-            this.boundingRectangle.Y = (int)position.Y;
-            this.boundingRectangle.Width = width;
-            this.boundingRectangle.Height = height;
+            int newWidth = (int)(idleAnimation.FrameWidth * 0.4);
+            int newHeight = (int)(idleAnimation.FrameHeight * 0.8);
+            int left = (idleAnimation.FrameWidth - newWidth) / 2;
+            int top = idleAnimation.FrameHeight - newHeight;
+            localBounds = new Rectangle(left, top, newWidth, newHeight);
+
+            this.boundingRectangle.Width = (int)width;
+            this.boundingRectangle.Height = (int)height;
+            this.boundingRectangle.X = (int)(position.X - width / 2);
+            this.boundingRectangle.Y = (int)(position.Y - height / 2);
         }
 
         /// <summary>
@@ -169,8 +172,8 @@ namespace TexasJames
         {
             Position = position;
 
-            this.boundingRectangle.X = (int)position.X;
-            this.boundingRectangle.Y = (int)position.Y;
+            this.boundingRectangle.X = (int)(position.X - width / 2);
+            this.boundingRectangle.Y = (int)(position.Y - height / 2);
 
             Velocity = Vector2.Zero;
             isAlive = true;
@@ -250,8 +253,8 @@ namespace TexasJames
             movement = 0.0f;
             isJumping = false;
 
-            this.boundingRectangle.X = (int)position.X;
-            this.boundingRectangle.Y = (int)position.Y;
+            this.boundingRectangle.X = (int)(position.X - width / 2);
+            this.boundingRectangle.Y = (int)(position.Y - height / 2);
         }
 
         public void MovePlayerLeft()
@@ -545,6 +548,7 @@ namespace TexasJames
 
             // Draw that sprite.
             sprite.Draw(gameTime, spriteBatch, Position, flip);
+
         }
 
         public override bool CollisionTest(Collidable obj)

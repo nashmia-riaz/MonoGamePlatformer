@@ -40,10 +40,10 @@ namespace TexasJames
             position.Y -= 25;
             direction = dir;
 
-            this.boundingRectangle.X = (int)position.X;
-            this.boundingRectangle.Y = (int)position.Y;
             this.boundingRectangle.Width = (int)width;
             this.boundingRectangle.Height = (int)height;
+            this.boundingRectangle.X = (int)(position.X - width / 2);
+            this.boundingRectangle.Y = (int)(position.Y - height / 2);
 
             LoadContent();
         }
@@ -51,9 +51,9 @@ namespace TexasJames
         {
             if (this.FlaggedForRemoval) return;
             this.position.X += direction * speed;// * (float) gameTime.TotalGameTime.TotalSeconds;
-            this.boundingRectangle.X = (int)position.X;
-            
-       }
+            this.boundingRectangle.X = (int)(position.X - width / 2);
+
+        }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {

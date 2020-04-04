@@ -82,6 +82,10 @@ namespace TexasJames
         /// </summary>
         private const float MoveSpeed = 64.0f;
 
+
+        float width = 64;
+        float height = 64;
+
         /// <summary>
         /// Constructs a new Enemy.
         /// </summary>
@@ -90,10 +94,10 @@ namespace TexasJames
             this.level = level;
             this.position = position;
 
-            this.boundingRectangle.X = (int)position.X;
-            this.boundingRectangle.Y = (int)position.Y;
-
             LoadContent(spriteSet);
+
+            this.boundingRectangle.X = (int)(position.X - width / 2);
+            this.boundingRectangle.Y = (int)(position.Y - height / 2);
         }
 
         /// <summary>
@@ -101,6 +105,9 @@ namespace TexasJames
         /// </summary>
         public void LoadContent(string spriteSet)
         {
+            this.boundingRectangle.Width = (int)width;
+            this.boundingRectangle.Height = (int)height;
+
             // Load animations.
             spriteSet = "Sprites/" + spriteSet + "/";
             runAnimation = new Animation(Level.Content.Load<Texture2D>(spriteSet + "Run"), 0.1f, true);
@@ -108,18 +115,12 @@ namespace TexasJames
             sprite.PlayAnimation(idleAnimation);
 
             // Calculate bounds within texture size.
-            //int width = (int)(idleAnimation.FrameWidth);
-            //int height = (int)(idleAnimation.FrameHeight);
-            //int left = (idleAnimation.FrameWidth - width) / 2;
-            //int top = idleAnimation.FrameHeight - height;
-            int width = 22;
-            int height = 64;
-            int left = (int)position.X-width/2;
-            int top = (int)position.Y-height/2;
-            localBounds = new Rectangle(left, top, width, height);
+            int newWidth = (int)(idleAnimation.FrameWidth);
+            int newHeight = (int)(idleAnimation.FrameHeight);
+            int left = (idleAnimation.FrameWidth - newWidth) / 2;
+            int top = idleAnimation.FrameHeight - newHeight;
+            localBounds = new Rectangle(left, top, newWidth, newHeight);
 
-            this.boundingRectangle.Width = width;
-            this.boundingRectangle.Height = height;
         }
 
 
@@ -160,8 +161,8 @@ namespace TexasJames
                     // Move in the current direction.
                     Vector2 velocity = new Vector2((int)direction * MoveSpeed * elapsed, 0.0f);
                     position = position + velocity;
-                    this.boundingRectangle.X = (int)position.X;
-                    this.boundingRectangle.Y = (int)position.Y;
+                    this.boundingRectangle.X = (int)(position.X - width/2);
+                    this.boundingRectangle.Y = (int)(position.Y - height/2);
                 }
             }
         }
