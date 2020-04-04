@@ -131,13 +131,15 @@ namespace TexasJames
 
             // Load background layer textures. For now, all levels must
             // use the same backgrounds and only use the left-most part of them.
-            layers = new Texture2D[3];
-            for (int i = 0; i < layers.Length; ++i)
-            {
-                // Choose a random segment if each background layer for level variety.
-                int segmentIndex = levelIndex;
-                layers[i] = Content.Load<Texture2D>("Backgrounds/Layer" + i + "_" + segmentIndex);
-            }
+            //layers = new Texture2D[3];
+            //for (int i = 0; i < layers.Length; ++i)
+            //{
+            //    // Choose a random segment if each background layer for level variety.
+            //    int segmentIndex = levelIndex;
+            //    layers[i] = Content.Load<Texture2D>("Backgrounds/Layer" + i + "_" + segmentIndex);
+            //}
+            layers = new Texture2D[1];
+            layers[0] = Content.Load<Texture2D>("Backgrounds/CaveBackground");
 
             // Load sounds.
             soundManager = new SoundManager(content);
@@ -664,7 +666,7 @@ namespace TexasJames
         /// </summary>
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            for (int i = 0; i <= EntityLayer; ++i)
+            for (int i = 0; i <= 0; ++i)
                 spriteBatch.Draw(layers[i], Vector2.Zero, Color.White);
 
             DrawTiles(spriteBatch);
@@ -680,8 +682,8 @@ namespace TexasJames
             foreach (EnemyB enemy in enemiesB)
                 enemy.Draw(gameTime, spriteBatch);
 
-            for (int i = EntityLayer + 1; i < layers.Length; ++i)
-                spriteBatch.Draw(layers[i], Vector2.Zero, Color.White);
+            //for (int i = EntityLayer + 1; i < layers.Length; ++i)
+            //    spriteBatch.Draw(layers[i], Vector2.Zero, Color.White);
 
             foreach (Bullet bullet in bullets)
                 bullet.Draw(gameTime, spriteBatch);

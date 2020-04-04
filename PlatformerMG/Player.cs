@@ -161,7 +161,7 @@ namespace TexasJames
             this.boundingRectangle.Width = (int)width;
             this.boundingRectangle.Height = (int)height;
             this.boundingRectangle.X = (int)(position.X - width / 2);
-            this.boundingRectangle.Y = (int)(position.Y - height / 2);
+            this.boundingRectangle.Y = (int)(position.Y - height);
         }
 
         /// <summary>

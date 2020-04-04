@@ -35,8 +35,9 @@ namespace TexasJames
 
             this.boundingRectangle.Width = Tile.Width;
             this.boundingRectangle.Height = Tile.Height;
-            this.boundingRectangle.X = (int)(pos.X - Tile.Width / 2);
-            this.boundingRectangle.Y = (int)(pos.Y - Tile.Height / 2);
+
+            this.boundingRectangle.X = (int)(Position.X - Tile.Width / 2);
+            this.boundingRectangle.Y = (int)(Position.Y - Tile.Height);
 
             LoadContent(texPath);
         }
