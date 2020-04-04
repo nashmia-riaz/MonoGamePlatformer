@@ -12,7 +12,7 @@ namespace TexasJames
     {
         float width = 10;
         float height = 10;
-        float speed = 10.0f;
+        float speed = 500.0f;
 
         public Vector2 position = new Vector2(0.0f, 0.0f);
 
@@ -50,9 +50,8 @@ namespace TexasJames
         public void Update(GameTime gameTime)
         {
             if (this.FlaggedForRemoval) return;
-            this.position.X += direction * speed;// * (float) gameTime.TotalGameTime.TotalSeconds;
+            this.position.X += direction * speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
             this.boundingRectangle.X = (int)(position.X - width / 2);
-
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)

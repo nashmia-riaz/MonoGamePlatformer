@@ -53,6 +53,10 @@ namespace TexasJames
         public const int Width = 40;
         public const int Height = 32;
 
+        public int nextLevel = -1;
+
+        public bool isFinalExit = false;
+
         public static readonly Vector2 Size = new Vector2(Width, Height);
 
         /// <summary>

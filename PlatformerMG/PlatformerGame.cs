@@ -137,7 +137,13 @@ namespace TexasJames
         {
             if (buttonState == eButtonState.DOWN)
             {
-                level.OnExitReached();
+                levelIndex = level.LevelToLoad;
+                if (levelIndex < 0) return;
+
+                if (level.CollidingExit)
+                    level.OnExitReached();
+                else
+                    LoadNextLevel(levelIndex);
             }
         }
 
@@ -145,7 +151,7 @@ namespace TexasJames
         {
             // Perform the appropriate action to advance the game and
             // to get the player back to playing.
-            if (!wasContinuePressed && buttonState == eButtonState.DOWN)
+            if (buttonState == eButtonState.DOWN)
             {
                 if (!level.Player.IsAlive)
                 {
@@ -154,7 +160,10 @@ namespace TexasJames
                 else if (level.TimeRemaining == TimeSpan.Zero)
                 {
                     if (level.ReachedExit)
-                        LoadNextLevel();
+                    {
+                        levelIndex = level.LevelToLoad;
+                        LoadNextLevel(levelIndex);
+                    }
                     else
                         ReloadCurrentLevel();
                 }
@@ -193,7 +202,8 @@ namespace TexasJames
             }
             catch { }
 
-            LoadNextLevel();
+            levelIndex = 0;
+            LoadNextLevel(levelIndex);
         }
 
         /// <summary>
@@ -211,10 +221,11 @@ namespace TexasJames
             base.Update(gameTime);
         }
 
-        private void LoadNextLevel()
+        private void LoadNextLevel(int newLevelIndex)
         {
             // move to the next level
-            levelIndex = (levelIndex + 1) % numberOfLevels;
+            //levelIndex = (levelIndex + 1) % numberOfLevels;
+            levelIndex = newLevelIndex;
 
             // Unloads the content for the current level before loading the next one.
             if (level != null)
@@ -228,8 +239,8 @@ namespace TexasJames
 
         private void ReloadCurrentLevel()
         {
-            --levelIndex;
-            LoadNextLevel();
+            //--levelIndex;
+            LoadNextLevel(levelIndex);
         }
 
         /// <summary>

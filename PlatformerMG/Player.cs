@@ -529,6 +529,11 @@ namespace TexasJames
             level.OnExitColliding();
         }
 
+        public void OnCollidingWithNextArea(int levelNo)
+        {
+            level.onNextAreaColliding(levelNo);
+        }
+
         public void OnReachedExit()
         {
             sprite.PlayAnimation(celebrateAnimation);
@@ -537,6 +542,11 @@ namespace TexasJames
         public void OnOutOfExit()
         {
             level.OnOutOfExit();
+        }
+
+        public void OnOutOfNextArea()
+        {
+            level.OnLeaveNextAreaColliding();
         }
 
         /// <summary>
@@ -559,13 +569,7 @@ namespace TexasJames
         {
             if (obj != null)
             {
-                bool isObjColliding = boundingRectangle.Intersects(obj.BoundingRectangle);
-                if (isObjColliding)
-                {
-                    obj.wasCollidingWith = null;
-                    this.wasCollidingWith = obj;
-                }
-                return isObjColliding;
+                return boundingRectangle.Intersects(obj.BoundingRectangle);
             }
 
             return false;
@@ -582,6 +586,7 @@ namespace TexasJames
         {
             if (obj == null) return;
             if (obj.FlaggedForRemoval) return;
+            wasCollidingWith = obj;
             //Console.WriteLine("COLLIDING WITH " + obj);
             //Gem gem = obj as Gem;
             Tile tile = obj as Tile;
@@ -596,10 +601,14 @@ namespace TexasJames
             {
                 if (tile.Collision == TileCollision.Exit)
                 {
-                    if (IsAlive && IsOnGround && !level.ReachedExit){
-                        OnCollidingWithExit();
+                    if (IsAlive && IsOnGround)
+                    {
+                        if (!tile.isFinalExit)
+                            OnCollidingWithNextArea(tile.nextLevel);
+                        else
+                            OnCollidingWithExit();
                     }
-                }
+                }    
             }
 
             if(enemy != null)
@@ -622,7 +631,10 @@ namespace TexasJames
 
             if (tile != null && tile.Collision == TileCollision.Exit)
             {
-                OnOutOfExit();
+                if (!tile.isFinalExit)
+                    OnOutOfNextArea();
+                else
+                    OnOutOfExit();
             }
         }
     }

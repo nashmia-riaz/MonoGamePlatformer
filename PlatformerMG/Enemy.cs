@@ -213,8 +213,7 @@ namespace TexasJames
             if (obj.FlaggedForRemoval || this.FlaggedForRemoval) return;
 
             if (obj as Gem != null) return;
-
-            Console.WriteLine("Enemy collided with "+obj);
+            
             Bullet bullet = obj as Bullet;
 
             if(bullet != null)

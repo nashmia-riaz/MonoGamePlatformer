@@ -53,7 +53,7 @@ namespace TexasJames
         private CollisionManager collisionManager;
         private SoundManager soundManager;
 
-        private int ammoCount = 10;
+        private int ammoCount = 3;
 
         // Level game state.
         private Random random = new Random(354668); // Arbitrary, but constant seed
@@ -75,6 +75,13 @@ namespace TexasJames
             get { return collidingExit; }
         }
         bool collidingExit;
+
+
+        public bool CollidingNextArea
+        {
+            get { return collidingNextArea; }
+        }
+        bool collidingNextArea;
 
         public bool HasGameEnded
         {
@@ -199,56 +206,68 @@ namespace TexasJames
         /// <returns>The loaded tile.</returns>
         private Tile LoadTile(char tileType, int x, int y)
         {
-            switch (tileType)
+            //if the the tileType is a digit, we know it's directs to a level
+            if (Char.IsDigit(tileType))
             {
-                // Blank space
-                case '.':
-                    return new Tile(null, TileCollision.Passable);
+                Tile exitTile = LoadExitTile(int.Parse(tileType.ToString()), x, y);
+                exitTile.isFinalExit = false;
+                return exitTile;
+            }
+            else
+            {
+                switch (tileType)
+                {
+                    // Blank space
+                    case '.':
+                        return new Tile(null, TileCollision.Passable);
 
-                // Exit
-                case 'X':
-                    return LoadExitTile(x, y);
+                    // Exit
+                    case 'X':
+                        Tile exitTile = LoadExitTile(100, x, y);
+                        exitTile.isFinalExit = true;
+                        return exitTile;
 
-                // Gem
-                case 'G':
-                    return LoadGemTile(x, y);
+                    // Gem
+                    case 'G':
+                        return LoadGemTile(x, y);
 
-                case 'Q':
-                    return LoadAmmoTile(x, y);
+                    case 'Q':
+                        return LoadAmmoTile(x, y);
 
-                // Floating platform
-                case '-':
-                    return LoadTile("Platform", TileCollision.Platform);
+                    // Floating platform
+                    case '-':
+                        return LoadTile("Platform", TileCollision.Platform);
 
-                // Various enemies
-                case 'A':
-                    return LoadEnemyTile(x, y, "MonsterA");
-                case 'B':
-                    return LoadEnemyTile(x, y, "MonsterB");
-                case 'C':
-                    return LoadEnemyTile(x, y, "MonsterC");
-                case 'D':
-                    return LoadEnemyTile(x, y, "MonsterD");
+                    // Various enemies
+                    case 'A':
+                        return LoadEnemyTile(x, y, "MonsterA");
+                    case 'B':
+                        return LoadEnemyTile(x, y, "MonsterB");
+                    case 'C':
+                        return LoadEnemyTile(x, y, "MonsterC");
+                    case 'D':
+                        return LoadEnemyTile(x, y, "MonsterD");
 
-                // Platform block
-                case '~':
-                    return LoadVarietyTile("BlockB", 2, TileCollision.Platform);
+                    // Platform block
+                    case '~':
+                        return LoadVarietyTile("BlockB", 2, TileCollision.Platform);
 
-                // Passable block
-                case ':':
-                    return LoadVarietyTile("BlockB", 2, TileCollision.Passable);
+                    // Passable block
+                    case ':':
+                        return LoadVarietyTile("BlockB", 2, TileCollision.Passable);
 
-                // Player 1 start point
-                case '1':
-                    return LoadStartTile(x, y);
+                    // Player 1 start point
+                    case 'S':
+                        return LoadStartTile(x, y);
 
-                // Impassable block
-                case '#':
-                    return LoadVarietyTile("BlockA", 7, TileCollision.Impassable);
+                    // Impassable block
+                    case '#':
+                        return LoadVarietyTile("BlockA", 7, TileCollision.Impassable);
 
-                // Unknown tile type character
-                default:
-                    throw new NotSupportedException(String.Format("Unsupported tile type character '{0}' at position {1}, {2}.", tileType, x, y));
+                    // Unknown tile type character
+                    default:
+                        throw new NotSupportedException(String.Format("Unsupported tile type character '{0}' at position {1}, {2}.", tileType, x, y));
+                }
             }
         }
 
@@ -304,18 +323,21 @@ namespace TexasJames
         /// <summary>
         /// Remembers the location of the level's exit.
         /// </summary>
-        private Tile LoadExitTile(int x, int y)
+        private Tile LoadExitTile(int levelNo, int x, int y)
         {
-            if (exit != InvalidPosition)
-                throw new NotSupportedException("A level may only have one exit.");
-
             exit = GetBounds(x, y).Center;
             Tile exitTile = LoadTile("Exit", TileCollision.Exit);
-            exitTile.boundingRectangle.X = (int)exit.X;
-            exitTile.boundingRectangle.Y = (int)exit.Y;
             exitTile.boundingRectangle.Width = Tile.Width;
             exitTile.boundingRectangle.Height = Tile.Height;
-            
+
+            exitTile.boundingRectangle.X = (int)exit.X - Tile.Width/2;
+            exitTile.boundingRectangle.Y = (int)exit.Y - Tile.Height;
+
+            exitTile.nextLevel = levelNo;
+
+            Console.WriteLine("Exit point is " + exit.X + ", " + exit.Y);
+            Console.WriteLine("Exit bouning top-left is " + exitTile.boundingRectangle.X + ", " + exitTile.boundingRectangle.Y);
+
             collisionManager.AddCollidable(exitTile);
             return exitTile;
         }
@@ -470,16 +492,7 @@ namespace TexasJames
                 UpdateEnemies(gameTime);
 
                 UpdateBullets(gameTime);
-
-                // The player has reached the exit if they are standing on the ground and
-                // his bounding rectangle contains the center of the exit tile. They can only
-                // exit when they have collected all of the gems.
-                if (Player.IsAlive &&
-                    Player.IsOnGround &&
-                    Player.oldBoundingRectangle.Contains(exit))
-                {
-                    //OnExitReached();
-                }
+                
             }
 
             // Clamp the time remaining at zero.
@@ -515,7 +528,7 @@ namespace TexasJames
 
         public void AmmoCollected(Ammo ammo)
         {
-            ammoCount+=5;
+            ammoCount+=1;
             soundManager.PlaySound("GemCollected");
 
             RemoveAmmo(ammo);
@@ -631,7 +644,7 @@ namespace TexasJames
         public void OnExitReached()
         {
             if (!collidingExit || ReachedExit) return;
-
+            Console.WriteLine("Exiting area");
             Player.OnReachedExit();
             soundManager.PlaySound("ExitReached");
             reachedExit = true;
@@ -644,20 +657,38 @@ namespace TexasJames
             }
         }
 
+        public int LevelToLoad = -1;
+        public void onNextAreaColliding(int levelNo)
+        {
+            if (CollidingNextArea) return;
+
+            LevelToLoad = levelNo;
+            collidingNextArea = true;
+        }
+
+        public void OnLeaveNextAreaColliding()
+        {
+            if (!CollidingNextArea) return;
+
+            LevelToLoad = -1;
+            collidingNextArea = false;
+        }
+
         public void OnExitColliding()
         {
             if (collidingExit) return;
 
+            LevelToLoad = 100;
             collidingExit = true;
-            Console.WriteLine("Walked into exit tile");
+            Console.WriteLine("Walked into exit tile " + LevelToLoad);
         }
 
         public void OnOutOfExit()
         {
             if (!collidingExit) return;
-
-            Console.WriteLine("Walked out of exit tile");
+            LevelToLoad = -1;
             collidingExit = false;
+            Console.WriteLine("Walked out of exit tile " + LevelToLoad);
         }
         
         /// <summary>

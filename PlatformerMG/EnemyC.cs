@@ -37,7 +37,6 @@ namespace TexasJames
             //if player's y position is on the same level as the enemy, set state to chase
             if (playerPos.Y < position.Y + 20 && playerPos.Y > position.Y - 20)
             {
-                Console.WriteLine("Player is in sight!");
                 enemyState = EnemyState.Chasing;
                 if (playerPos.X < this.position.X)
                     this.direction = FaceDirection.Left;
@@ -49,7 +48,6 @@ namespace TexasJames
             if (enemyState == EnemyState.Idle)
             {
                 waitTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                Console.WriteLine("Enemy has been waiting " + waitTime+" while max wait time is "+MaxWaitTime);
                 //after waiting, resume movement
                 if (waitTime >= MaxWaitTime)
                 {
