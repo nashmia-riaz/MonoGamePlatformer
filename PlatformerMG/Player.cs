@@ -579,18 +579,13 @@ namespace TexasJames
             if (obj == null) return;
             if (obj.FlaggedForRemoval) return;
             //Console.WriteLine("COLLIDING WITH " + obj);
-            Gem gem = obj as Gem;
+            //Gem gem = obj as Gem;
             Tile tile = obj as Tile;
             Enemy enemy = obj as Enemy;
-
-            if (gem != null)
+            Powerup powerup = obj as Powerup;
+            if (powerup != null)
             {
-                if (gem.wasCollected) return;
-                Console.WriteLine("Gem collected by player");
-                level.OnGemCollected();
-                gem.wasCollected = true;
-                gem.FlaggedForRemoval = true;
-                level.RemoveGem(gem);
+                powerup.OnCollected();
             }
 
             if(tile != null)

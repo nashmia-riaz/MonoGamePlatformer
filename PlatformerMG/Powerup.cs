@@ -30,8 +30,13 @@ namespace TexasJames
         public Powerup() { }
 
         public Powerup(Level level, Vector2 pos, string texPath) {
-            Position = pos;
             this.level = level;
+            this.Position = pos;
+
+            this.boundingRectangle.Width = Tile.Width;
+            this.boundingRectangle.Height = Tile.Height;
+            this.boundingRectangle.X = (int)(pos.X - Tile.Width / 2);
+            this.boundingRectangle.Y = (int)(pos.Y - Tile.Height / 2);
 
             LoadContent(texPath);
         }

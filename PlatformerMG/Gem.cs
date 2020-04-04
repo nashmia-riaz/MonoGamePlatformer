@@ -17,12 +17,8 @@ namespace TexasJames
     /// <summary>
     /// A valuable item the player can collect.
     /// </summary>
-    class Gem : Collidable
+    class Gem : Powerup
     {
-        private Texture2D texture;
-        private Vector2 origin;
-        private SoundEffect collectedSound;
-
         public const int PointValue = 30;
         public readonly Color Color = Color.Yellow;
         public bool wasCollected = false;
@@ -30,13 +26,7 @@ namespace TexasJames
         // The gem is animated from a base position along the Y axis.
         private Vector2 basePosition;
         private float bounce;
-
-        public Level Level
-        {
-            get { return level; }
-        }
-        Level level;
-
+        
         /// <summary>
         /// Gets the current position of this gem in world space.
         /// </summary>
@@ -51,27 +41,15 @@ namespace TexasJames
         /// <summary>
         /// Constructs a new gem.
         /// </summary>
-        public Gem(Level level, Vector2 position)
+        public Gem(Level level, Vector2 position):base(level, position, "Sprites/Gem")
         {
-            this.level = level;
             this.basePosition = position;
+            //this.level = level;
 
-            this.boundingRectangle.Width = Tile.Width;
-            this.boundingRectangle.Height = Tile.Height;
-            this.boundingRectangle.X = (int)(position.X - Tile.Width/2);
-            this.boundingRectangle.Y = (int)(position.Y-Tile.Height/2);
-
-            LoadContent();
-        }
-
-        /// <summary>
-        /// Loads the gem texture and collected sound.
-        /// </summary>
-        public void LoadContent()
-        {
-            texture = Level.Content.Load<Texture2D>("Sprites/Gem");
-            origin = new Vector2(texture.Width / 2.0f, texture.Height / 2.0f);
-            collectedSound = Level.Content.Load<SoundEffect>("Sounds/GemCollected");
+            //this.boundingRectangle.Width = Tile.Width;
+            //this.boundingRectangle.Height = Tile.Height;
+            //this.boundingRectangle.X = (int)(position.X - Tile.Width/2);
+            //this.boundingRectangle.Y = (int)(position.Y-Tile.Height/2);
         }
 
         /// <summary>
@@ -89,25 +67,20 @@ namespace TexasJames
             double t = gameTime.TotalGameTime.TotalSeconds * BounceRate + Position.X * BounceSync;
             bounce = (float)Math.Sin(t) * BounceHeight * texture.Height;
         }
-
-        /// <summary>
-        /// Called when this gem has been collected by a player and removed from the level.
-        /// </summary>
-        /// <param name="collectedBy">
-        /// The player who collected this gem. Although currently not used, this parameter would be
-        /// useful for creating special powerup gems. For example, a gem could make the player invincible.
-        /// </param>
-        public void OnCollected(Player collectedBy)
-        {
-            //collectedSound.Play();
-        }
-
+        
         /// <summary>
         /// Draws a gem in the appropriate color.
         /// </summary>
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(texture, Position, null, GameInfo.Instance.GemInfo.Color, 0.0f, origin, 1.0f, SpriteEffects.None, 0.0f);
+        }
+
+        public override void OnCollected()
+        {
+            Console.WriteLine(this + " collected by player");
+            level.OnGemCollected(this);
+            this.FlaggedForRemoval = true;
         }
     }
 }

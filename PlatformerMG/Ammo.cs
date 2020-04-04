@@ -11,7 +11,6 @@ namespace TexasJames
     class Ammo : Powerup
     {
         public Ammo(Level level, Vector2 pos, string textPath) : base(level, pos, textPath) {
-            
         }
         
         public override bool CollisionExitTest()
@@ -26,7 +25,9 @@ namespace TexasJames
 
         public override void OnCollected()
         {
-            level.AmmoCollected();
+            Console.WriteLine(this + " collected by player");
+            level.AmmoCollected(this);
+            this.FlaggedForRemoval = true;
         }
 
         public override void OnCollision(Collidable obj)

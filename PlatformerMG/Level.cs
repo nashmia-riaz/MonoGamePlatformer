@@ -346,6 +346,7 @@ namespace TexasJames
 
         public Tile LoadAmmoTile(int x, int y)
         {
+            Console.WriteLine("Loaded ammo");
             Point point = GetBounds(x, y).Center;
             Ammo newAmmo = new Ammo(this, new Vector2(point.X, point.Y), "Sprites/Ammo");
             ammos.Add(newAmmo);
@@ -493,9 +494,12 @@ namespace TexasJames
             collisionManager.AddCollidable(bullet);
         }
 
-        public void AmmoCollected()
+        public void AmmoCollected(Ammo ammo)
         {
             ammoCount+=5;
+            soundManager.PlaySound("GemCollected");
+
+            RemoveAmmo(ammo);
         }
 
         public void PlayerAttack()
@@ -516,6 +520,11 @@ namespace TexasJames
         public void RemoveGem(Gem gem)
         {
             gems.Remove(gem);
+        }
+
+        public void RemoveAmmo(Ammo ammo)
+        {
+            ammos.Remove(ammo);
         }
 
         private void UpdateBullets(GameTime gameTime)
@@ -564,19 +573,12 @@ namespace TexasJames
         /// <summary>
         /// Called when a gem is collected.
         /// </summary>
-        /// <param name="gem">The gem that was collected.</param>
-        /// <param name="collectedBy">The player who collected this gem.</param>
-        private void OnGemCollected(Gem gem, Player collectedBy)
-        {
-            score += Gem.PointValue;
-
-            gem.OnCollected(collectedBy);
-        }
-
-        public void OnGemCollected()
+        public void OnGemCollected(Gem gem)
         {
             score += Gem.PointValue;
             soundManager.PlaySound("GemCollected");
+
+            RemoveGem(gem);
         }
         
         /// <summary>
