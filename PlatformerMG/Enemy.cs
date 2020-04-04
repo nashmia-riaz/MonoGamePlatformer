@@ -100,7 +100,9 @@ namespace TexasJames
             LoadContent(spriteSet);
 
             this.boundingRectangle.X = (int)(position.X - width / 2);
-            this.boundingRectangle.Y = (int)(position.Y - height / 2);
+            this.boundingRectangle.Y = (int)(position.Y - height);
+            Console.WriteLine("Enemy bounding box position it " + this.BoundingRectangle.Center);
+            Console.WriteLine("Enemy bounding box width and height is " + this.BoundingRectangle.Width + ", " + this.boundingRectangle.Height);
         }
 
         /// <summary>
@@ -163,8 +165,8 @@ namespace TexasJames
                     // Move in the current direction.
                     Vector2 velocity = new Vector2((int)direction * MoveSpeed * elapsed, 0.0f);
                     position = position + velocity;
-                    this.boundingRectangle.X = (int)(position.X - width/2);
-                    this.boundingRectangle.Y = (int)(position.Y - height/2);
+                    this.boundingRectangle.X = (int)(position.X - width / 2);
+                    this.boundingRectangle.Y = (int)(position.Y - height);
                 }
             }
         }

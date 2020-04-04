@@ -324,6 +324,7 @@ namespace TexasJames
         private Tile LoadEnemyTile(int x, int y, string spriteSet)
         {
             Vector2 position = RectangleExtensions.GetBottomCenter(GetBounds(x, y));
+            Console.WriteLine("Spawned enemy at " + position);
             Enemy enemy;
             if (spriteSet == "MonsterB")
             {
