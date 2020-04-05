@@ -56,7 +56,7 @@ namespace TexasJames
         private CollisionManager collisionManager;
         private SoundManager soundManager;
 
-        private int ammoCount = 3;
+        public int ammoCount = GameInfo.Instance.NumberOfBullets;
 
         // Level game state.
         private Random random = new Random(354668); // Arbitrary, but constant seed
@@ -690,9 +690,15 @@ namespace TexasJames
 
             if (score > GameInfo.Instance.Highscore)
             {
-                GameInfo.Instance.Highscore = score;
-                loader.WriteXML("Content/Info.xml");
+                SaveGame();
             }
+        }
+
+        public void SaveGame()
+        {
+            GameInfo.Instance.Highscore = score;
+            GameInfo.Instance.NumberOfBullets = ammoCount;
+            loader.WriteXML("Content/Info.xml");
         }
 
         public int LevelToLoad = -1;
@@ -801,5 +807,13 @@ namespace TexasJames
         }
 
         #endregion
+
+        public void ResetStats()
+        {
+            GameInfo.Instance.WasKeyCollected = false;
+            GameInfo.Instance.Highscore = 0;
+
+            loader.WriteXML("Content/Info.xml");
+        }
     }
 }

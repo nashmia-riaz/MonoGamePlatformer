@@ -87,8 +87,13 @@ namespace TexasJames
             commandManager.AddKeyboardBinding(Keys.Up, MakePlayerJump);
             commandManager.AddKeyboardBinding(Keys.Space, MakePlayerAttack);
             commandManager.AddKeyboardBinding(Keys.Z, ProceedToNextArea);
-
             commandManager.AddKeyboardBinding(Keys.X, MakePlayerShoot);
+            commandManager.AddKeyboardBinding(Keys.R, ResetGameStats);
+        }
+
+        private void ResetGameStats(eButtonState buttonState, Vector2 amount)
+        {
+            level.ResetStats();
         }
 
         private void MakePlayerShoot(eButtonState buttonState, Vector2 amount)
@@ -102,7 +107,10 @@ namespace TexasJames
         private void ExitGame(eButtonState buttonState, Vector2 amount)
         {
             if (buttonState == eButtonState.DOWN)
+            {
+                level.SaveGame();
                 Exit();
+            }
         }
 
         private void StartGame(eButtonState buttonState, Vector2 amount)
@@ -310,6 +318,7 @@ namespace TexasJames
             float timeHeight = hudFont.MeasureString(timeString).Y;
             DrawShadowedString(hudFont, "SCORE: " + level.Score.ToString(), hudLocation + new Vector2(0.0f, timeHeight * 1.2f), Color.Yellow);
 
+            DrawShadowedString(hudFont, "BULLETS: " + level.ammoCount.ToString(), hudLocation + new Vector2(0.0f, timeHeight * 2.4f), Color.Yellow);
             // Determine the status overlay message to show.
             Texture2D status = null;
             if (level.TimeRemaining == TimeSpan.Zero)

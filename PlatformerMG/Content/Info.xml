@@ -23,4 +23,5 @@
     0
   </Highscore>
   <WasKeyCollected>false</WasKeyCollected>
+  <NumberOfBullets>3</NumberOfBullets>
 </GameInfo>
