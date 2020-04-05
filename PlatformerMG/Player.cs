@@ -587,8 +587,7 @@ namespace TexasJames
             if (obj == null) return;
             if (obj.FlaggedForRemoval) return;
             wasCollidingWith = obj;
-            //Console.WriteLine("COLLIDING WITH " + obj);
-            //Gem gem = obj as Gem;
+
             Tile tile = obj as Tile;
             Enemy enemy = obj as Enemy;
             Powerup powerup = obj as Powerup;

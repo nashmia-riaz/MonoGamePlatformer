@@ -91,8 +91,14 @@ namespace TexasJames
             commandManager.AddKeyboardBinding(Keys.R, ResetGameStats);
         }
 
+        /// <summary>
+        /// Reset all info.xml stats so we can start from beginning
+        /// </summary>
+        /// <param name="buttonState"></param>
+        /// <param name="amount"></param>
         private void ResetGameStats(eButtonState buttonState, Vector2 amount)
         {
+            GameInfo.Instance.Highscore = 0;
             level.ResetStats();
         }
 
@@ -318,7 +324,9 @@ namespace TexasJames
             float timeHeight = hudFont.MeasureString(timeString).Y;
             DrawShadowedString(hudFont, "SCORE: " + level.Score.ToString(), hudLocation + new Vector2(0.0f, timeHeight * 1.2f), Color.Yellow);
 
-            DrawShadowedString(hudFont, "BULLETS: " + level.ammoCount.ToString(), hudLocation + new Vector2(0.0f, timeHeight * 2.4f), Color.Yellow);
+            DrawShadowedString(hudFont, "BULLETS: " + GameInfo.Instance.NumberOfBullets.ToString(), hudLocation + new Vector2(0.0f, timeHeight * 2.4f), Color.Yellow);
+
+            DrawShadowedString(hudFont, "HIGHSCORE: " + GameInfo.Instance.Highscore.ToString(), hudLocation + new Vector2(0.0f, timeHeight * 3.6f), Color.Yellow);
             // Determine the status overlay message to show.
             Texture2D status = null;
             if (level.TimeRemaining == TimeSpan.Zero)

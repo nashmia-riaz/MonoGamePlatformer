@@ -55,9 +55,7 @@ namespace TexasJames
 
         private CollisionManager collisionManager;
         private SoundManager soundManager;
-
-        public int ammoCount = GameInfo.Instance.NumberOfBullets;
-
+        
         // Level game state.
         private Random random = new Random(354668); // Arbitrary, but constant seed
 
@@ -65,7 +63,7 @@ namespace TexasJames
         {
             get { return score; }
         }
-        int score;
+        static int score;
 
         public bool ReachedExit
         {
@@ -219,7 +217,7 @@ namespace TexasJames
             //if the the tileType is a digit, we know it's directs to a level
             if (Char.IsDigit(tileType))
             {
-                Tile exitTile = LoadExitTile(int.Parse(tileType.ToString()), x, y);
+                Tile exitTile = LoadExitTile("Door", int.Parse(tileType.ToString()), x, y);
                 return exitTile;
             }
             else
@@ -232,7 +230,7 @@ namespace TexasJames
 
                     // Exit
                     case 'X':
-                        Tile exitTile = LoadExitTile(100, x, y);
+                        Tile exitTile = LoadExitTile("Exit", 100, x, y);
                         exitTile.isFinalExit = true;
                         return exitTile;
 
@@ -336,10 +334,10 @@ namespace TexasJames
         /// <summary>
         /// Remembers the location of the level's exit.
         /// </summary>
-        private Tile LoadExitTile(int levelNo, int x, int y)
+        private Tile LoadExitTile(string sprite, int levelNo, int x, int y)
         {
             exit = GetBounds(x, y).Center;
-            Tile exitTile = LoadTile("Exit", TileCollision.Exit);
+            Tile exitTile = LoadTile(sprite, TileCollision.Exit);
             exitTile.boundingRectangle.Width = Tile.Width;
             exitTile.boundingRectangle.Height = Tile.Height;
 
@@ -547,8 +545,8 @@ namespace TexasJames
 
         public void MakePlayerShoot()
         {
-            if (ammoCount <= 0) return;
-            ammoCount--;
+            if (GameInfo.Instance.NumberOfBullets <= 0) return;
+            GameInfo.Instance.NumberOfBullets--;
             Bullet bullet = new Bullet(this, player.Position, player.direction);
             bullets.Add(bullet);
             collisionManager.AddCollidable(bullet);
@@ -556,7 +554,7 @@ namespace TexasJames
 
         public void AmmoCollected(Ammo ammo)
         {
-            ammoCount+=1;
+            GameInfo.Instance.NumberOfBullets += 1;
             soundManager.PlaySound("GemCollected");
 
             RemoveAmmo(ammo);
@@ -652,6 +650,7 @@ namespace TexasJames
         public void OnKeyCollected(Key newKey)
         {
             Console.WriteLine("Key collected, was collected " + WasKeyCollected);
+            soundManager.PlaySound("GemCollected");
             if (WasKeyCollected) return;
             GameInfo.Instance.WasKeyCollected = true;
             loader.WriteXML("Content/Info.xml");
@@ -690,14 +689,14 @@ namespace TexasJames
 
             if (score > GameInfo.Instance.Highscore)
             {
-                SaveGame();
+                GameInfo.Instance.Highscore = score;
             }
+            ResetStats();
+            SaveGame();
         }
 
         public void SaveGame()
         {
-            GameInfo.Instance.Highscore = score;
-            GameInfo.Instance.NumberOfBullets = ammoCount;
             loader.WriteXML("Content/Info.xml");
         }
 
@@ -709,6 +708,7 @@ namespace TexasJames
             LevelToLoad = levelNo;
             collidingNextArea = true;
             Console.WriteLine("Walked into exit tile " + LevelToLoad);
+            SaveGame();
         }
 
         public void OnLeaveNextAreaColliding()
@@ -811,7 +811,7 @@ namespace TexasJames
         public void ResetStats()
         {
             GameInfo.Instance.WasKeyCollected = false;
-            GameInfo.Instance.Highscore = 0;
+            GameInfo.Instance.NumberOfBullets = 3;
 
             loader.WriteXML("Content/Info.xml");
         }

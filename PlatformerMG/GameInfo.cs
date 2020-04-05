@@ -46,5 +46,6 @@ namespace TexasJames
         public bool WasKeyCollected = false;
         public int Highscore = 0;
         public int NumberOfBullets = 0;
+        public int Score = 0;
     }
 }
