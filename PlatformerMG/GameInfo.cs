@@ -43,7 +43,7 @@ namespace TexasJames
         public PlayerInfo PlayerInfo;
         public EnemyInfo EnemyInfo;
         public GemInfo GemInfo;
-
+        public bool WasKeyCollected = false;
         public int Highscore = 0;
     }
 }

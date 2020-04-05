@@ -61,6 +61,7 @@
     <Compile Include="GameInfo.cs" />
     <Compile Include="Gem.cs" />
     <Compile Include="InputHandler.cs" />
+    <Compile Include="Key.cs" />
     <Compile Include="KeyboardEventArgs.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="Loader.cs" />

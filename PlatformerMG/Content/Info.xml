@@ -22,4 +22,5 @@
   <Highscore>
     0
   </Highscore>
+  <WasKeyCollected>false</WasKeyCollected>
 </GameInfo>

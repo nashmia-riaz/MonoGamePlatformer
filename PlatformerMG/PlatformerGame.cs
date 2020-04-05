@@ -18,6 +18,11 @@ using Microsoft.Xna.Framework.Input.Touch;
 
 namespace TexasJames
 {
+    enum GameState
+    {
+        TitleScreen = 1,
+        InGame = 2,
+    }
     /// <summary>
     /// This is the main type for your game
     /// </summary>
@@ -40,6 +45,8 @@ namespace TexasJames
         private Level level;
         private bool wasContinuePressed;
 
+        private GameState currentState = GameState.TitleScreen;
+
         private CommandManager commandManager;
 
         // When the time remaining is less than the warning time, it blinks on the hud
@@ -58,11 +65,12 @@ namespace TexasJames
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            #if WINDOWS_PHONE
+                #if WINDOWS_PHONE
                 graphics.IsFullScreen = true;
                 TargetElapsedTime = TimeSpan.FromTicks(333333);
-            #endif
+                #endif
 
+            currentState = GameState.TitleScreen;
             commandManager = new CommandManager();
             Accelerometer.Initialize();
             InitializeBindings();
@@ -78,7 +86,7 @@ namespace TexasJames
             commandManager.AddKeyboardBinding(Keys.Right, MovePlayerToRight);
             commandManager.AddKeyboardBinding(Keys.Up, MakePlayerJump);
             commandManager.AddKeyboardBinding(Keys.Space, MakePlayerAttack);
-            commandManager.AddKeyboardBinding(Keys.Down, ProceedToNextArea);
+            commandManager.AddKeyboardBinding(Keys.Z, ProceedToNextArea);
 
             commandManager.AddKeyboardBinding(Keys.X, MakePlayerShoot);
         }
@@ -100,7 +108,11 @@ namespace TexasJames
         private void StartGame(eButtonState buttonState, Vector2 amount)
         {
             if (!hasGameStarted && buttonState == eButtonState.DOWN)
-                hasGameStarted = true;
+            {
+                currentState = GameState.InGame;
+            }
+
+            LoadNextLevel(0);
 
             commandManager.UpdateKeyboardBinding(Keys.Enter, ContinueGame);
         }
@@ -140,9 +152,9 @@ namespace TexasJames
                 levelIndex = level.LevelToLoad;
                 if (levelIndex < 0) return;
 
-                if (level.CollidingExit)
+                if (level.CollidingExit && GameInfo.Instance.WasKeyCollected)
                     level.OnExitReached();
-                else
+                else if (!level.CollidingExit)
                     LoadNextLevel(levelIndex);
             }
         }
@@ -269,7 +281,7 @@ namespace TexasJames
             Vector2 center = new Vector2(titleSafeArea.X + titleSafeArea.Width / 2.0f,
                                          titleSafeArea.Y + titleSafeArea.Height / 2.0f);
 
-            if (!hasGameStarted)
+            if (currentState == GameState.TitleScreen)
             {
                 // Draw status message.
                 Rectangle destinationRectangle = new Rectangle(0, 0, titleSafeArea.Width, titleSafeArea.Height);

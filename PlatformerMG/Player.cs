@@ -592,9 +592,11 @@ namespace TexasJames
             Tile tile = obj as Tile;
             Enemy enemy = obj as Enemy;
             Powerup powerup = obj as Powerup;
+            Key key = obj as Key;
             if (powerup != null)
             {
                 powerup.OnCollected();
+                powerup.FlaggedForRemoval = true;
             }
 
             if(tile != null)

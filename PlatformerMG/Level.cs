@@ -39,11 +39,14 @@ namespace TexasJames
         }
         Player player;
 
+
         private List<Gem> gems = new List<Gem>();
         private List<Enemy> enemies = new List<Enemy>();
         private List<EnemyB> enemiesB = new List<EnemyB>();
         private List<Bullet> bullets = new List<Bullet>();
         private List<Ammo> ammos = new List<Ammo>();
+
+        private Key key = null;
 
         // Key locations in the level.        
         private Vector2 start;
@@ -89,6 +92,12 @@ namespace TexasJames
         }
         bool hasGameEnded;
 
+        public bool WasKeyCollected
+        {
+            get { return wasKeyCollected; }
+        }
+        bool wasKeyCollected = false;
+
         public TimeSpan TimeRemaining
         {
             get { return timeRemaining; }
@@ -124,6 +133,7 @@ namespace TexasJames
         public Level(IServiceProvider serviceProvider, Stream fileStream, int levelIndex)
         {
             hasGameEnded = false;
+            key = null;
 
             loader = new Loader(fileStream);
             loader.ReadXML("Content/Info.xml");
@@ -210,7 +220,6 @@ namespace TexasJames
             if (Char.IsDigit(tileType))
             {
                 Tile exitTile = LoadExitTile(int.Parse(tileType.ToString()), x, y);
-                exitTile.isFinalExit = false;
                 return exitTile;
             }
             else
@@ -233,6 +242,10 @@ namespace TexasJames
 
                     case 'Q':
                         return LoadAmmoTile(x, y);
+
+                    case 'K':
+                        return LoadKeyTile(x, y);
+                        break;
 
                     // Floating platform
                     case '-':
@@ -396,6 +409,21 @@ namespace TexasJames
             return new Tile(null, TileCollision.Passable);
         }
 
+
+        public Tile LoadKeyTile(int x, int y)
+        {
+            wasKeyCollected = GameInfo.Instance.WasKeyCollected;
+            if (WasKeyCollected) return new Tile(null, TileCollision.Passable);
+
+            Console.WriteLine("Loaded key, collected "+WasKeyCollected);
+            Point point = GetBounds(x, y).Center;
+            Key newKey = new Key(this, new Vector2(point.X, point.Y), "Sprites/Key");
+            key = newKey;
+            collisionManager.AddCollidable(newKey);
+
+            return new Tile(null, TileCollision.Passable);
+        }
+
         /// <summary>
         /// Unloads the level content.
         /// </summary>
@@ -405,7 +433,7 @@ namespace TexasJames
         }
 
         #endregion
-
+       
         #region Bounds and collision
 
         /// <summary>
@@ -621,6 +649,15 @@ namespace TexasJames
             RemoveGem(gem);
         }
         
+        public void OnKeyCollected(Key newKey)
+        {
+            Console.WriteLine("Key collected, was collected " + WasKeyCollected);
+            if (WasKeyCollected) return;
+            GameInfo.Instance.WasKeyCollected = true;
+            loader.WriteXML("Content/Info.xml");
+            this.key = null;
+        }
+
         /// <summary>
         /// Called when the player is killed.
         /// </summary>
@@ -644,6 +681,7 @@ namespace TexasJames
         public void OnExitReached()
         {
             if (!collidingExit || ReachedExit) return;
+            
             Console.WriteLine("Exiting area");
             Player.OnReachedExit();
             soundManager.PlaySound("ExitReached");
@@ -664,6 +702,7 @@ namespace TexasJames
 
             LevelToLoad = levelNo;
             collidingNextArea = true;
+            Console.WriteLine("Walked into exit tile " + LevelToLoad);
         }
 
         public void OnLeaveNextAreaColliding()
@@ -672,6 +711,7 @@ namespace TexasJames
 
             LevelToLoad = -1;
             collidingNextArea = false;
+            Console.WriteLine("Walked into exit tile " + LevelToLoad);
         }
 
         public void OnExitColliding()
@@ -733,6 +773,9 @@ namespace TexasJames
 
             foreach (Ammo ammo in ammos)
                 ammo.Draw(gameTime, spriteBatch);
+
+            if (key != null)
+                key.Draw(gameTime, spriteBatch);
         }
 
         /// <summary>
