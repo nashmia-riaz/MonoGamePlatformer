@@ -356,14 +356,14 @@ namespace TexasJames
                     spriteBatch.Draw(GameOverScreen, destinationRectangle, Color.White);
                     //DrawShadowedString(hudFont, "YOU DID IT!", hudLocation + new Vector2(0.0f, timeHeight * 2.4f), Color.Yellow);
                     //spriteBatch.DrawString(font, value, position + new Vector2(1.0f, 1.0f), Color.Black);
-                    spriteBatch.DrawString(hudFont, "YOU DID IT! YOU REACHED THE TREASURE!", hudLocation + new Vector2(10, 10), Color.Yellow, 0, new Vector2(0, 0), 2, SpriteEffects.None, 0);
-                    spriteBatch.DrawString(hudFont, "Your score is: "+level.Score.ToString(), hudLocation + new Vector2(10, 60), Color.Yellow, 0, new Vector2(0, 0), 1, SpriteEffects.None, 0);
-                    spriteBatch.DrawString(hudFont, "Previous Highscores:", hudLocation + new Vector2(10, 100), Color.Yellow, 0, new Vector2(0, 0), 1.5f, SpriteEffects.None, 0);
+                    spriteBatch.DrawString(hudFont, "YOU DID IT! YOU REACHED THE TREASURE!", hudLocation + new Vector2(10, 10), new Color(255, 174, 50), 0, new Vector2(0, 0), 2, SpriteEffects.None, 0);
+                    spriteBatch.DrawString(hudFont, "Your score is: "+level.Score.ToString(), hudLocation + new Vector2(10, 60), new Color(255, 174, 50), 0, new Vector2(0, 0), 1, SpriteEffects.None, 0);
+                    spriteBatch.DrawString(hudFont, "Previous Highscores:", hudLocation + new Vector2(10, 100), new Color(255, 174, 50), 0, new Vector2(0, 0), 1.5f, SpriteEffects.None, 0);
 
                     for (int i = 0; i < level.highscoresInt.Count; i++)
                     {
                         spriteBatch.DrawString(hudFont, "Player "+(i+1)+": "+ level.highscoresInt[i], 
-                            hudLocation + new Vector2(10, 120 + (i+1) * 20), Color.Yellow, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
+                            hudLocation + new Vector2(10, 120 + (i+1) * 20), new Color(255, 174, 50), 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
                     }
                     return;
                 }

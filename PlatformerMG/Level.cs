@@ -558,6 +558,7 @@ namespace TexasJames
             soundManager.PlaySound("GemCollected");
 
             RemoveAmmo(ammo);
+            ammo = null;
         }
 
         public void PlayerAttack()
@@ -645,6 +646,7 @@ namespace TexasJames
             soundManager.PlaySound("GemCollected");
 
             RemoveGem(gem);
+            gem = null;
         }
         
         public void OnKeyCollected(Key newKey)
@@ -655,6 +657,7 @@ namespace TexasJames
             GameInfo.Instance.WasKeyCollected = true;
             loader.WriteXML("Content/Info.xml");
             this.key = null;
+            newKey = null;
         }
 
         /// <summary>
