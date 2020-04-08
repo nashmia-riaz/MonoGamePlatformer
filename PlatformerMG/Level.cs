@@ -502,7 +502,7 @@ namespace TexasJames
                 int seconds = (int)Math.Round(gameTime.ElapsedGameTime.TotalSeconds * 100.0f);
                 seconds = Math.Min(seconds, (int)Math.Ceiling(TimeRemaining.TotalSeconds));
                 timeRemaining -= TimeSpan.FromSeconds(seconds);
-                score += seconds * PointsPerSecond;
+                //score += seconds * PointsPerSecond;
             }
             else
             {
@@ -673,7 +673,8 @@ namespace TexasJames
 
             hasGameEnded = true;
         }
-        
+
+        public List<int> highscoresInt = new List<int>();
         /// <summary>
         /// Called when the player reaches the level's exit.
         /// </summary>
@@ -686,10 +687,17 @@ namespace TexasJames
             soundManager.PlaySound("ExitReached");
             reachedExit = true;
             hasGameEnded = true;
+            LevelToLoad = 0;
 
-            if (score > GameInfo.Instance.Highscore)
+            highscoresInt = GameInfo.Instance.readHighscores();
+            highscoresInt.Sort();
+            //if score is within the range
+            if (score < highscoresInt[highscoresInt.Count-1] && score > highscoresInt[0])
             {
-                GameInfo.Instance.Highscore = score;
+                highscoresInt.Add(score);
+                highscoresInt.Sort();
+                highscoresInt.RemoveAt(0);
+                highscoresInt.Reverse();
             }
             ResetStats();
             SaveGame();
@@ -697,6 +705,7 @@ namespace TexasJames
 
         public void SaveGame()
         {
+            GameInfo.Instance.WriteHighscores(highscoresInt);
             loader.WriteXML("Content/Info.xml");
         }
 

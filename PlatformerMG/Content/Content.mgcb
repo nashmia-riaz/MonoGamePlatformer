@@ -152,6 +152,18 @@
 #begin Levels/2.txt
 /copy:Levels/2.txt
 
+#begin Overlays/Game Over-01.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Overlays/Game Over-01.png
+
 #begin Overlays/Title Screen.png
 /importer:TextureImporter
 /processor:TextureProcessor

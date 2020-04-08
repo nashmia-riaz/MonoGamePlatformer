@@ -40,6 +40,32 @@ namespace TexasJames
             set { mInstance = value; }
         }
 
+        public List<int> readHighscores()
+        {
+            List<int> highscoresInt = new List<int>();
+            string[]scores = Highscores.Split(',');
+
+            for(int i = 0; i < scores.Length; i++)
+            {
+                int toAdd = Int32.Parse(scores[i]);
+                highscoresInt.Add(toAdd);
+            }
+            return highscoresInt;
+        }
+
+        public void WriteHighscores(List<int> scores)
+        {
+            if (scores.Count() <= 0) return;
+            string toWrite = "";
+            for(int i = 0; i < scores.Count() - 1; i++)
+            {
+                toWrite += scores[i]+",";
+            }
+            toWrite += scores[scores.Count() - 1];
+
+            GameInfo.Instance.Highscores = toWrite;
+        }
+
         public PlayerInfo PlayerInfo;
         public EnemyInfo EnemyInfo;
         public GemInfo GemInfo;
@@ -47,5 +73,6 @@ namespace TexasJames
         public int Highscore = 0;
         public int NumberOfBullets = 0;
         public int Score = 0;
+        public string Highscores = "";
     }
 }
